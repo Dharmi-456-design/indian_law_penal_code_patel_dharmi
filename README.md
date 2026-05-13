@@ -35,13 +35,13 @@
 
 | Resource | Link |
 |---|---|
-| 🌐 **Live App (Production)** | [https://lexindia.vercel.app](https://lexindia.vercel.app) |
-| ▲ **Frontend Deploy (Vercel)** | [https://lexindia.vercel.app](https://lexindia.vercel.app) |
-| 🚀 **Backend API (Render)** | [https://lexindia-api.onrender.com](https://lexindia-api.onrender.com) |
-| 📦 **Frontend Repository** | [github.com/YOUR_USERNAME/lexindia-frontend](https://github.com/YOUR_USERNAME/lexindia-frontend) |
-| 🗄️ **Backend Repository** | [github.com/YOUR_USERNAME/lexindia-backend](https://github.com/YOUR_USERNAME/lexindia-backend) |
-| ▶️ **YouTube Demo** | [Watch Full Demo](https://youtube.com/watch?v=YOUR_VIDEO_ID) |
-| 📄 **API Health Check** | [/api/v1/health](https://lexindia-api.onrender.com/api/v1/health) |
+| 🌐 **Live App (Production)** | [https://lexindia.vercel.app]() |
+| ▲ **Frontend Deploy (Vercel)** | [https://lexindia.vercel.app]() |
+| 🚀 **Backend API (Render)** | [https://lexindia-api.onrender.com]() |
+| 📦 **Frontend Repository** | [github.com/YOUR_USERNAME/lexindia-frontend]() |
+| 🗄️ **Backend Repository** | [github.com/YOUR_USERNAME/lexindia-backend]() |
+| ▶️ **YouTube Demo** | [Watch Full Demo]() |
+| 📄 **API Health Check** | [/api/v1/health]() |
 
 > **⚠️ Note:** Replace all placeholder URLs with your actual deployed links before publishing.
 
