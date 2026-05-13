@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const auditLogSchema = new mongoose.Schema({
-    userId: {
+    adminId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -9,21 +9,24 @@ const auditLogSchema = new mongoose.Schema({
     },
     action: {
         type: String,
-        required: true,
-        enum: ['LOGIN', 'LOGOUT', 'CREATE_NOTE', 'UPDATE_NOTE', 'DELETE_NOTE', 'ADD_BOOKMARK', 'REMOVE_BOOKMARK', 'SEARCH']
+        required: true
     },
-    resource: {
+    targetCollection: {
         type: String,
         required: true
     },
-    details: {
-        type: mongoose.Schema.Types.Mixed
+    targetId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     },
-    ipAddress: {
+    details: {
+        type: String
+    },
+    ip: {
         type: String
     }
 }, {
-    timestamps: true
+    timestamps: { createdAt: true, updatedAt: false }
 });
 
 const AuditLog = mongoose.model('AuditLog', auditLogSchema);

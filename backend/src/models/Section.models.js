@@ -1,54 +1,59 @@
 const mongoose = require('mongoose');
 
 const sectionSchema = new mongoose.Schema({
-    section_number: {
+    actCode: {
         type: String,
         required: true,
+        enum: ['NIA', 'MVA', 'IEA', 'IPC', 'IDA', 'HMA', 'CrPC'],
         index: true
     },
-    title: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    description: {
+    actName: {
         type: String,
         required: true
     },
-    punishment: {
-        type: String
-    },
-    bailable: {
-        type: String, // Can be "Bailable", "Non-Bailable", or Boolean
-        default: "N/A"
-    },
-    cognizable: {
-        type: String, // Can be "Cognizable", "Non-Cognizable"
-        default: "N/A"
-    },
-    triable_by: {
-        type: String
+    actYear: {
+        type: Number
     },
     chapter: {
-        type: String,
+        type: Number,
+        default: null,
         index: true
     },
-    act_name: {
+    chapterTitle: {
         type: String,
-        default: 'IPC', // Indian Penal Code
+        default: null
+    },
+    sectionNumber: {
+        type: String,
+        required: true,
         index: true
     },
-    metadata: {
-        type: Map,
-        of: mongoose.Schema.Types.Mixed,
-        default: {}
+    sectionTitle: {
+        type: String,
+        required: true
+    },
+    sectionDesc: {
+        type: String,
+        required: true
+    },
+    isArchived: {
+        type: Boolean,
+        default: false,
+        index: true
+    },
+    viewCount: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true
 });
 
-// Full text search index
-sectionSchema.index({ title: 'text', description: 'text', section_number: 'text' });
+// Compound unique index
+sectionSchema.index({ actCode: 1, sectionNumber: 1 }, { unique: true });
+
+// Full-text search index
+sectionSchema.index({ sectionTitle: 'text', sectionDesc: 'text' });
 
 const Section = mongoose.model('Section', sectionSchema);
 module.exports = Section;

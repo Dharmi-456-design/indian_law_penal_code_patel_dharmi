@@ -13,10 +13,9 @@ const noteSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    content: {
+    noteText: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     }
 }, {
     timestamps: true
