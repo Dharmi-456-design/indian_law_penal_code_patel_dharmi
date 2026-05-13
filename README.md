@@ -10,11 +10,11 @@
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-lexindia.app-4f46e5?style=for-the-badge)](https://lexindia.vercel.app)
-[![Frontend](https://img.shields.io/badge/▲%20Vercel-Frontend%20Deploy-000000?style=for-the-badge&logo=vercel)](https://lexindia.vercel.app)
-[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)](https://lexindia-api.onrender.com)
-[![YouTube](https://img.shields.io/badge/▶%20YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
-[![GitHub Repo](https://img.shields.io/badge/⭐%20GitHub-Source%20Code-181717?style=for-the-badge&logo=github)](https://github.com/YOUR_USERNAME/lexindia)
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Coming%20Soon-4f46e5?style=for-the-badge)]()
+[![Frontend](https://img.shields.io/badge/▲%20Vercel-Frontend%20Deploy-000000?style=for-the-badge&logo=vercel)]()
+[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)]()
+[![YouTube](https://img.shields.io/badge/▶%20YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)]()
+[![GitHub Repo](https://img.shields.io/badge/⭐%20GitHub-Source%20Code-181717?style=for-the-badge&logo=github)]()
 
 <br/>
 
@@ -35,35 +35,13 @@
 
 | Resource | Link |
 |---|---|
-| 🌐 **Live App (Production)** | [https://lexindia.vercel.app]() |
-| ▲ **Frontend Deploy (Vercel)** | [https://lexindia.vercel.app]() |
-| 🚀 **Backend API (Render)** | [https://lexindia-api.onrender.com]() |
-| 📦 **Frontend Repository** | [github.com/YOUR_USERNAME/lexindia-frontend]() |
-| 🗄️ **Backend Repository** | [github.com/YOUR_USERNAME/lexindia-backend]() |
-| ▶️ **YouTube Demo** | [Watch Full Demo]() |
-| 📄 **API Health Check** | [/api/v1/health]() |
-
-> **⚠️ Note:** Replace all placeholder URLs with your actual deployed links before publishing.
-
----
-
-## 📋 Table of Contents
-
-- [About the Project](#-about-the-project)
-- [Demo](#-demo)
-- [Tech Stack](#-tech-stack)
-- [Features](#-features)
-- [Dataset Coverage](#-dataset-coverage)
-- [Architecture](#-architecture)
-- [API Documentation](#-api-documentation)
-- [Database Design](#-database-design)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-- [Environment Variables](#-environment-variables)
-- [Deployment](#-deployment)
-- [Screenshots](#-screenshots)
-- [Contributing](#-contributing)
-- [License](#-license)
+| 🌐 **Live App (Production)** | Coming Soon |
+| ▲ **Frontend Deploy (Vercel)** | Coming Soon |
+| 🚀 **Backend API (Render)** | Coming Soon |
+| 📦 **Frontend Repository** | Coming Soon |
+| 🗄️ **Backend Repository** | Coming Soon |
+| ▶️ **YouTube Demo** | Coming Soon |
+| 📄 **API Health Check** | Coming Soon |
 
 ---
 
@@ -85,9 +63,9 @@ Built over 30 days (13 May – 13 June 2026) as a production-grade MERN applicat
 
 <div align="center">
 
-[![LexIndia Demo Video](https://img.shields.io/badge/▶%20Watch%20Full%20Demo%20on%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
+[![LexIndia Demo Video](https://img.shields.io/badge/▶%20Watch%20Full%20Demo%20on%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]()
 
-> Click the badge above to watch the complete walkthrough of LexIndia — featuring user login, section browsing, full-text search, bookmarks, notes, and the admin analytics dashboard.
+> Demo video coming soon.
 
 </div>
 
@@ -183,20 +161,17 @@ LexIndia covers **~2,043 sections** across **8 major Indian Acts**:
                     │       Vercel          │
                     │   (Frontend Hosting)  │
                     │   React 18 + Vite     │
-                    │   lexindia.vercel.app │
                     └──────────┬───────────┘
                                │ HTTPS (REST)
                     ┌──────────▼───────────┐
                     │       Render          │
                     │   (Backend Hosting)   │
                     │   Node.js + Express   │
-                    │   lexindia-api.onrender.com │
                     └──────────┬───────────┘
                                │ Mongoose Driver
                     ┌──────────▼───────────┐
                     │    MongoDB Atlas      │
                     │  (Cloud Database)     │
-                    │  lexindia cluster     │
                     └──────────────────────┘
 
 CI/CD: GitHub → Actions → lint → test → deploy
@@ -205,7 +180,7 @@ CI/CD: GitHub → Actions → lint → test → deploy
 ### Middleware Chain
 
 ```
-Request → morgan(logger) → helmet → cors → express.json
+Request → morgan → helmet → cors → express.json
        → verifyToken → roleGuard → validate → controller → response
 ```
 
@@ -215,14 +190,14 @@ Request → morgan(logger) → helmet → cors → express.json
 POST /register → bcrypt hash (saltRounds: 12) → create user → JWT (7d)
 POST /login    → verify password              → JWT issued  → store in localStorage
 Protected APIs → Authorization: Bearer <token> → verifyToken middleware
-POST /logout   → client clears token + optional server-side blacklist
+POST /logout   → client clears token
 ```
 
 ---
 
 ## 📡 API Documentation
 
-**Base URL:** `https://lexindia-api.onrender.com/api/v1`
+**Base URL:** `/api/v1`
 
 All responses follow this envelope:
 
@@ -264,7 +239,7 @@ All responses follow this envelope:
 | `PATCH` | `/sections/:id/archive` | Admin | Archive section |
 | `PATCH` | `/sections/:id/restore` | Admin | Restore archived section |
 
-**Query Parameters for Listings:**
+**Query Parameters:**
 ```
 ?actCode=IPC         — filter by act
 ?chapter=2           — filter by chapter
@@ -372,7 +347,7 @@ users  (many) ─── (many) sections   [via bookmarks]
 ```json
 {
   "actCode":       "enum: ['IPC','CrPC','CPC','HMA','IDA','IEA','NIA','MVA']",
-  "actName":       "string — full act name",
+  "actName":       "string",
   "actYear":       "number",
   "chapter":       "number | null",
   "chapterTitle":  "string | null",
@@ -390,90 +365,64 @@ users  (many) ─── (many) sections   [via bookmarks]
 
 ## 📁 Project Structure
 
-### Backend (`lexindia-backend/`)
+### Backend
 
 ```
-src/
-├── config/
-│   ├── db.js                   # MongoDB connection
-│   └── env.js                  # Environment validation
-├── models/
-│   ├── User.js
-│   ├── Section.js
-│   ├── Note.js
-│   ├── Bookmark.js
-│   ├── SearchLog.js
-│   └── AuditLog.js
-├── controllers/
-│   ├── auth.controller.js
-│   ├── section.controller.js
-│   ├── act.controller.js
-│   ├── user.controller.js
-│   ├── note.controller.js
-│   ├── bookmark.controller.js
-│   ├── search.controller.js
-│   └── analytics.controller.js
-├── services/
-│   └── [mirrored per controller]
-├── routes/v1/
-│   ├── auth.routes.js
-│   ├── section.routes.js
-│   ├── act.routes.js
-│   ├── user.routes.js
-│   ├── note.routes.js
-│   ├── bookmark.routes.js
-│   ├── search.routes.js
-│   └── analytics.routes.js
-├── middlewares/
-│   ├── auth.middleware.js      # JWT verify → req.user
-│   ├── role.middleware.js      # RBAC guard
-│   ├── error.middleware.js     # Global error handler
-│   ├── validate.middleware.js  # express-validator
-│   └── logger.middleware.js    # Morgan HTTP logger
-├── utils/
-│   ├── asyncHandler.js
-│   ├── ApiResponse.js
-│   ├── ApiError.js
-│   ├── pagination.js
-│   └── filterBuilder.js
-└── scripts/
-    └── seed.js                 # Master data seeder
+lexindia-backend/
+├── src/
+│   ├── config/
+│   ├── models/
+│   ├── controllers/
+│   ├── services/
+│   ├── routes/
+│   │   └── v1/
+│   ├── middlewares/
+│   ├── validators/
+│   ├── utils/
+│   └── scripts/
+│       └── seed.js
+├── server.js
+├── .env
+├── .env.example
+└── package.json
 ```
 
-### Frontend (`lexindia-frontend/`)
+### Frontend
 
 ```
-src/
-├── assets/
-├── components/
-│   ├── ui/                     # Button, Input, Modal, Badge, Card, Table
-│   ├── layout/                 # Sidebar, Navbar, PageWrapper, Footer
-│   └── shared/                 # SectionCard, SearchBar, Pagination
-├── features/
-│   ├── auth/                   # authSlice + Login/Register pages
-│   ├── sections/               # sectionsSlice + Section pages
-│   ├── acts/                   # actsSlice + ActSelector
-│   ├── bookmarks/              # bookmarksSlice + BookmarkList
-│   ├── notes/                  # notesSlice + NoteForm
-│   ├── users/                  # usersSlice + UserTable (admin)
-│   ├── analytics/              # analyticsSlice + Charts
-│   └── search/                 # searchSlice + SearchResults
-├── hooks/
-│   ├── useAuth.js
-│   ├── useDebounce.js          # 300ms debounce for search
-│   ├── usePagination.js
-│   └── useLocalStorage.js
-├── pages/
-│   ├── public/                 # Login, Register, NotFound
-│   └── dashboard/
-│       ├── admin/              # AdminDashboard, UsersPage, AnalyticsPage...
-│       └── user/               # UserDashboard, BrowsePage, SectionDetail...
-├── services/
-│   └── api.js                  # Axios instance + interceptors
-├── store/
-│   ├── index.js
-│   └── slices/                 # All Redux slices
-└── router.jsx                  # React Router v6 with protected routes
+lexindia-frontend/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── ui/
+│   │   ├── layout/
+│   │   └── shared/
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── sections/
+│   │   ├── acts/
+│   │   ├── bookmarks/
+│   │   ├── notes/
+│   │   ├── users/
+│   │   ├── analytics/
+│   │   └── search/
+│   ├── hooks/
+│   ├── pages/
+│   │   ├── public/
+│   │   └── dashboard/
+│   │       ├── admin/
+│   │       └── user/
+│   ├── services/
+│   ├── store/
+│   │   └── slices/
+│   ├── utils/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── router.jsx
+├── .env
+├── tailwind.config.js
+└── vite.config.js
 ```
 
 ---
@@ -494,7 +443,7 @@ src/
 git clone https://github.com/YOUR_USERNAME/lexindia-backend.git
 cd lexindia-backend
 
-# Frontend (separate tab/terminal)
+# Frontend
 git clone https://github.com/YOUR_USERNAME/lexindia-frontend.git
 cd lexindia-frontend
 ```
@@ -504,20 +453,11 @@ cd lexindia-frontend
 ```bash
 cd lexindia-backend
 npm install
-
-# Copy and configure environment variables
 cp .env.example .env
-# Edit .env with your MongoDB URI, JWT secret, etc.
+# fill in your .env values
 
-# Seed the database with all 8 Acts (~2,043 sections)
-node src/scripts/seed.js
-
-# Create default admin user
-node src/scripts/seed.js --create-admin
-
-# Start development server
-npm run dev
-# API running at → http://localhost:5000
+node src/scripts/seed.js           # seed all 8 acts
+npm run dev                        # runs on http://localhost:5000
 ```
 
 ### 3. Frontend Setup
@@ -525,14 +465,10 @@ npm run dev
 ```bash
 cd lexindia-frontend
 npm install
-
-# Copy and configure environment variables
 cp .env.example .env
-# Edit .env with your backend API URL
+# fill in your .env values
 
-# Start development server
-npm run dev
-# App running at → http://localhost:5173
+npm run dev                        # runs on http://localhost:5173
 ```
 
 ---
@@ -557,8 +493,6 @@ VITE_API_BASE_URL=http://localhost:5000/api/v1
 VITE_APP_NAME=LexIndia
 ```
 
-> **For Production:** Update `CLIENT_URL` to your Vercel domain and `VITE_API_BASE_URL` to your Render backend URL.
-
 ---
 
 ## 🌐 Deployment
@@ -566,34 +500,25 @@ VITE_APP_NAME=LexIndia
 ### Frontend → Vercel
 
 ```bash
-# Install Vercel CLI
 npm i -g vercel
-
 cd lexindia-frontend
 vercel --prod
-
-# Set environment variables in Vercel Dashboard:
-# VITE_API_BASE_URL = https://lexindia-api.onrender.com/api/v1
-# VITE_APP_NAME = LexIndia
 ```
+
+Set `VITE_API_BASE_URL` to your Render backend URL in the Vercel dashboard.
 
 ### Backend → Render
 
-1. Push your backend repo to GitHub
+1. Push backend repo to GitHub
 2. Go to [render.com](https://render.com) → New Web Service
 3. Connect your `lexindia-backend` repository
-4. Configure:
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js`
-5. Add environment variables in Render dashboard (same as your `.env`)
-6. Deploy → Your API will be live at `https://lexindia-api.onrender.com`
+4. Build command: `npm install` | Start command: `node server.js`
+5. Add all environment variables from `.env`
 
 ### CI/CD — GitHub Actions
 
-The project uses GitHub Actions for automated pipelines:
-
 ```
-Push to main branch
+Push to main
   → Lint (ESLint)
   → Test (Jest)
   → Deploy Frontend to Vercel
@@ -604,17 +529,15 @@ Push to main branch
 
 ## 🖼 Screenshots
 
-> _Add screenshots of your app here. Below are suggested placeholders._
-
 | Page | Preview |
 |---|---|
-| 🏠 User Dashboard | _(screenshot)_ |
-| 📚 Browse Acts | _(screenshot)_ |
-| 🔍 Search Results | _(screenshot)_ |
-| 📖 Section Detail | _(screenshot)_ |
-| 🔖 Bookmarks | _(screenshot)_ |
-| 📊 Admin Dashboard | _(screenshot)_ |
-| 👥 Admin Users | _(screenshot)_ |
+| 🏠 User Dashboard | _(coming soon)_ |
+| 📚 Browse Acts | _(coming soon)_ |
+| 🔍 Search Results | _(coming soon)_ |
+| 📖 Section Detail | _(coming soon)_ |
+| 🔖 Bookmarks | _(coming soon)_ |
+| 📊 Admin Dashboard | _(coming soon)_ |
+| 👥 Admin Users | _(coming soon)_ |
 
 ---
 
@@ -650,18 +573,12 @@ Push to main branch
 Contributions are welcome! Please follow this workflow:
 
 ```bash
-# 1. Fork the repository
-# 2. Create your feature branch
 git checkout -b feat/your-feature-name
-
-# 3. Commit using conventional commits
 git commit -m "feat(search): add section-level relevance scoring"
-
-# 4. Push and open a Pull Request
 git push origin feat/your-feature-name
 ```
 
-Please follow the commit convention: `feat | fix | chore | docs | refactor | test`
+Commit convention: `feat | fix | chore | docs | refactor | test`
 
 ---
 
@@ -677,9 +594,9 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 **Built with ❤️ for Indian legal access**
 
-[![GitHub](https://img.shields.io/badge/GitHub-YOUR__USERNAME-181717?style=for-the-badge&logo=github)](https://github.com/YOUR_USERNAME)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/YOUR_USERNAME)
-[![YouTube](https://img.shields.io/badge/YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)](https://youtube.com/watch?v=YOUR_VIDEO_ID)
+[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge&logo=github)](https://github.com/Dharmi-456-design)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/dharmi-patel-0b899b389/)
+[![YouTube](https://img.shields.io/badge/YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)](https://www.youtube.com/@DharmiPatel-x5l)
 
 > *"India's Law, Decoded."*
 
