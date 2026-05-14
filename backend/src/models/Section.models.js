@@ -4,7 +4,7 @@ const sectionSchema = new mongoose.Schema({
     actCode: {
         type: String,
         required: true,
-        enum: ['NIA', 'MVA', 'IEA', 'IPC', 'IDA', 'HMA', 'CrPC'],
+        enum: ['NIA', 'MVA', 'IEA', 'IPC', 'IDA', 'HMA', 'CrPC', 'CPC'],
         index: true
     },
     actName: {
