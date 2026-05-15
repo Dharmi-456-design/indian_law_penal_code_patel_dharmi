@@ -108,11 +108,36 @@ const deleteSection = asyncHandler(async (req, res) => {
     );
 });
 
+const replaceSection = asyncHandler(async (req, res) => {
+    const section = await sectionService.replaceSection(req.params.id, req.body);
+    
+    await logAdminAction(
+        req.user._id,
+        'REPLACE',
+        section._id,
+        `Replaced section ${section.sectionNumber} of ${section.actCode}`,
+        req.ip
+    );
+
+    return res.status(200).json(
+        new ApiResponse(200, section, 'Section replaced successfully')
+    );
+});
+
+const checkExists = asyncHandler(async (req, res) => {
+    const exists = await sectionService.checkExists(req.params.id);
+    return res.status(200).json(
+        new ApiResponse(200, { exists }, 'Existence check completed')
+    );
+});
+
 module.exports = {
     createSection,
     getSection,
     updateSection,
+    replaceSection,
     archiveSection,
     restoreSection,
-    deleteSection
+    deleteSection,
+    checkExists
 };

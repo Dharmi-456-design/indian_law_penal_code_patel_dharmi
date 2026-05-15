@@ -14,6 +14,7 @@ router.use(protect);
 
 // Publicly readable (authenticated users)
 router.get('/:id', validateSectionId, validate, sectionController.getSection);
+router.get('/:id/exists', validateSectionId, validate, sectionController.checkExists);
 
 // Admin only operations
 router.use(restrictTo('admin'));
@@ -21,7 +22,8 @@ router.use(restrictTo('admin'));
 router.post('/', createSectionValidator, validate, sectionController.createSection);
 
 router.route('/:id')
-    .put(updateSectionValidator, validate, sectionController.updateSection)
+    .put(updateSectionValidator, validate, sectionController.replaceSection)
+    .patch(updateSectionValidator, validate, sectionController.updateSection)
     .delete(validateSectionId, validate, sectionController.deleteSection);
 
 router.patch('/:id/archive', validateSectionId, validate, sectionController.archiveSection);
