@@ -1,7 +1,4 @@
 const dotenv = require('dotenv');
-const Joi = require('joi'); // I'll use express-validator or just simple check since Joi isn't in package.json yet.
-// Actually, let's just use a simple check as per common practices if Joi is not there.
-// But the plan says "env validation". I'll use a simple approach.
 
 dotenv.config();
 
