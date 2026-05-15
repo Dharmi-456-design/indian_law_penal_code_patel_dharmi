@@ -15,7 +15,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     role: {
         type: String,
@@ -37,6 +38,19 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Hash password before saving
+userSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+    const bcrypt = require('bcryptjs');
+    this.password = await bcrypt.hash(this.password, 12);
+});
+
+// Method to check password
+userSchema.methods.isPasswordCorrect = async function (candidatePassword) {
+    const bcrypt = require('bcryptjs');
+    return await bcrypt.compare(candidatePassword, this.password);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
