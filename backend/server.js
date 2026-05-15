@@ -24,7 +24,12 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-// Basic Route
+// Routes
+const authRoutes = require('./src/routes/v1/auth.routes');
+
+app.use('/api/v1/auth', authRoutes);
+
+// Health Check
 app.get('/api/v1/health', (req, res) => {
     res.status(200).json({ success: true, message: 'Server is running' });
 });
