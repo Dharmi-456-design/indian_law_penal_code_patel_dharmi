@@ -99,11 +99,30 @@ const deleteSectionPermanently = async (id) => {
     return section;
 };
 
+/**
+ * Replace entire section (PUT)
+ */
+const replaceSection = async (id, sectionData) => {
+    const section = await Section.findByIdAndReplace(id, sectionData, { new: true });
+    if (!section) throw new ApiError(404, 'Section not found');
+    return section;
+};
+
+/**
+ * Check if a section exists
+ */
+const checkExists = async (id) => {
+    const section = await Section.exists({ _id: id, isArchived: false });
+    return !!section;
+};
+
 module.exports = {
     createSection,
     getSectionById,
     updateSection,
+    replaceSection,
     archiveSection,
     restoreSection,
-    deleteSectionPermanently
+    deleteSectionPermanently,
+    checkExists
 };
