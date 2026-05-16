@@ -131,6 +131,43 @@ const checkExists = asyncHandler(async (req, res) => {
     );
 });
 
+const getAllSections = asyncHandler(async (req, res) => {
+    const { data, meta } = await sectionService.getAllSections(req.query);
+    return res.status(200).json(
+        new ApiResponse(200, data, 'Sections fetched successfully', meta)
+    );
+});
+
+const getRecentSections = asyncHandler(async (req, res) => {
+    const sections = await sectionService.getRecentSections(req.query.limit);
+    return res.status(200).json(
+        new ApiResponse(200, sections, 'Recent sections fetched successfully')
+    );
+});
+
+const getTrendingSections = asyncHandler(async (req, res) => {
+    const sections = await sectionService.getTrendingSections(req.query.limit);
+    return res.status(200).json(
+        new ApiResponse(200, sections, 'Trending sections fetched successfully')
+    );
+});
+
+const getRandomSection = asyncHandler(async (req, res) => {
+    const section = await sectionService.getRandomSection();
+    return res.status(200).json(
+        new ApiResponse(200, section, 'Random section fetched successfully')
+    );
+});
+
+const getArchivedSections = asyncHandler(async (req, res) => {
+    // Force isArchived to true for this endpoint
+    const query = { ...req.query, isArchived: 'true' };
+    const { data, meta } = await sectionService.getAllSections(query);
+    return res.status(200).json(
+        new ApiResponse(200, data, 'Archived sections fetched successfully', meta)
+    );
+});
+
 module.exports = {
     createSection,
     getSection,
@@ -139,5 +176,10 @@ module.exports = {
     archiveSection,
     restoreSection,
     deleteSection,
-    checkExists
+    checkExists,
+    getAllSections,
+    getRecentSections,
+    getTrendingSections,
+    getRandomSection,
+    getArchivedSections
 };
