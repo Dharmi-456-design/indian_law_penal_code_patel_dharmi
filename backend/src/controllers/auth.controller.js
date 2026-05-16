@@ -9,10 +9,10 @@ const authService = require('../services/auth.service');
  */
 const register = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
-    const { user, token } = await authService.registerUser(name, email, password);
+    const { user, accessToken, refreshToken } = await authService.registerUser(name, email, password);
 
     res.status(201).json(
-        new ApiResponse(201, { user, token }, 'User registered successfully')
+        new ApiResponse(201, { user, accessToken, refreshToken }, 'User registered successfully')
     );
 });
 
@@ -23,10 +23,30 @@ const register = asyncHandler(async (req, res) => {
  */
 const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const { user, token } = await authService.loginUser(email, password);
+    const { user, accessToken, refreshToken } = await authService.loginUser(email, password);
 
     res.status(200).json(
-        new ApiResponse(200, { user, token }, 'Login successful')
+        new ApiResponse(200, { user, accessToken, refreshToken }, 'Login successful')
+    );
+});
+
+/**
+ * @desc    Refresh access token
+ * @route   POST /api/v1/auth/refresh-token
+ * @access  Public
+ */
+const refreshToken = asyncHandler(async (req, res) => {
+    const { refreshToken: oldRefreshToken } = req.body;
+    
+    if (!oldRefreshToken) {
+        const ApiError = require('../utils/ApiError');
+        throw new ApiError(400, 'Refresh token is required');
+    }
+
+    const tokens = await authService.refreshAccessToken(oldRefreshToken);
+
+    res.status(200).json(
+        new ApiResponse(200, tokens, 'Token refreshed successfully')
     );
 });
 
@@ -55,6 +75,7 @@ const logout = asyncHandler(async (req, res) => {
 module.exports = {
     register,
     login,
+    refreshToken,
     getMe,
     logout
 };
