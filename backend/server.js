@@ -26,8 +26,12 @@ app.use(express.json());
 
 // Routes
 const authRoutes = require('./src/routes/v1/auth.routes');
+const sectionRoutes = require('./src/routes/v1/section.routes');
+const searchRoutes = require('./src/routes/v1/search.routes');
 
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/sections', sectionRoutes);
+app.use('/api/v1/search', searchRoutes);
 
 // Health Check
 app.get('/api/v1/health', (req, res) => {
