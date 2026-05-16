@@ -4,21 +4,22 @@ const User = require('../models/User.models');
 const ApiError = require('../utils/ApiError');
 
 /**
- * Generate a JWT for a user.
- * Payload: { id, email, role }
+ * Generate Access and Refresh tokens for a user.
  */
-const generateToken = (user) => {
-    return jwt.sign(
-        { 
-            id: user._id,
-            email: user.email,
-            role: user.role
-        }, 
-        process.env.JWT_SECRET, 
-        {
-            expiresIn: process.env.JWT_EXPIRES_IN || '7d'
-        }
+const generateTokens = (user) => {
+    const accessToken = jwt.sign(
+        { id: user._id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
     );
+
+    const refreshToken = jwt.sign(
+        { id: user._id },
+        process.env.JWT_REFRESH_SECRET || 'refresh-secret-123',
+        { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+    );
+
+    return { accessToken, refreshToken };
 };
 
 /**
@@ -36,12 +37,17 @@ const registerUser = async (name, email, password) => {
         password
     });
 
-    const token = generateToken(user);
+    const { accessToken, refreshToken } = generateTokens(user);
     
+    // Save refresh token to DB
+    user.refreshToken = refreshToken;
+    await user.save();
+
     const userResponse = user.toObject();
     delete userResponse.password;
+    delete userResponse.refreshToken;
 
-    return { user: userResponse, token };
+    return { user: userResponse, accessToken, refreshToken };
 };
 
 /**
@@ -54,16 +60,50 @@ const loginUser = async (email, password) => {
         throw new ApiError(401, 'Invalid email or password');
     }
 
-    const token = generateToken(user);
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    // Save refresh token to DB
+    user.refreshToken = refreshToken;
+    await user.save();
 
     const userResponse = user.toObject();
     delete userResponse.password;
+    delete userResponse.refreshToken;
 
-    return { user: userResponse, token };
+    return { user: userResponse, accessToken, refreshToken };
+};
+
+/**
+ * Refresh access token using refresh token.
+ */
+const refreshAccessToken = async (oldRefreshToken) => {
+    try {
+        const decoded = jwt.verify(
+            oldRefreshToken,
+            process.env.JWT_REFRESH_SECRET || 'refresh-secret-123'
+        );
+
+        const user = await User.findById(decoded.id).select('+refreshToken');
+        
+        if (!user || user.refreshToken !== oldRefreshToken) {
+            throw new ApiError(401, 'Invalid or expired refresh token');
+        }
+
+        const tokens = generateTokens(user);
+        
+        // Update refresh token in DB
+        user.refreshToken = tokens.refreshToken;
+        await user.save();
+
+        return tokens;
+    } catch (err) {
+        throw new ApiError(401, 'Invalid or expired refresh token');
+    }
 };
 
 module.exports = {
     registerUser,
     loginUser,
-    generateToken
+    refreshAccessToken,
+    generateTokens
 };

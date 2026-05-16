@@ -1,5 +1,7 @@
 const Section = require('../models/Section.models');
 const ApiError = require('../utils/ApiError');
+const { buildPaginationMeta, buildSortObj } = require('../utils/paginationUtil');
+const { buildSectionFilter } = require('../utils/filterBuilder');
 
 /**
  * Create a new legal section
@@ -116,6 +118,65 @@ const checkExists = async (id) => {
     return !!section;
 };
 
+/**
+ * Get all sections with pagination, filtering and sorting
+ */
+const getAllSections = async (queryParams) => {
+    const { page = 1, limit = 20, sortBy, sortOrder } = queryParams;
+
+    const filter = buildSectionFilter(queryParams);
+    const sort = buildSortObj(sortBy, sortOrder);
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [data, total] = await Promise.all([
+        Section.find(filter)
+            .sort(sort)
+            .skip(skip)
+            .limit(Number(limit))
+            .select('-__v'),
+        Section.countDocuments(filter)
+    ]);
+
+    const meta = buildPaginationMeta(total, Number(page), Number(limit));
+
+    return { data, meta };
+};
+
+/**
+ * Get a random non-archived section
+ */
+const getRandomSection = async () => {
+    const count = await Section.countDocuments({ isArchived: false });
+    if (count === 0) return null;
+    
+    const random = Math.floor(Math.random() * count);
+    const section = await Section.findOne({ isArchived: false })
+        .skip(random)
+        .select('-__v');
+        
+    return section;
+};
+
+/**
+ * Get top viewed (trending) sections
+ */
+const getTrendingSections = async (limit = 10) => {
+    return await Section.find({ isArchived: false })
+        .sort({ viewCount: -1 })
+        .limit(Number(limit))
+        .select('-__v');
+};
+
+/**
+ * Get recently created sections
+ */
+const getRecentSections = async (limit = 10) => {
+    return await Section.find({ isArchived: false })
+        .sort({ createdAt: -1 })
+        .limit(Number(limit))
+        .select('-__v');
+};
+
 module.exports = {
     createSection,
     getSectionById,
@@ -124,5 +185,9 @@ module.exports = {
     archiveSection,
     restoreSection,
     deleteSectionPermanently,
-    checkExists
+    checkExists,
+    getAllSections,
+    getRandomSection,
+    getTrendingSections,
+    getRecentSections
 };
