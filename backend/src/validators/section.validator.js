@@ -1,4 +1,4 @@
-const { body, param } = require('express-validator');
+const { body, param, query } = require('express-validator');
 
 const validateSectionId = [
     param('id').isMongoId().withMessage('Invalid section ID format')
@@ -41,8 +41,19 @@ const updateSectionValidator = [
     body('sectionDesc').optional().trim().notEmpty()
 ];
 
+const sectionQueryValidator = [
+    query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
+    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
+    query('actCode').optional().isIn(['NIA', 'MVA', 'IEA', 'IPC', 'IDA', 'HMA', 'CrPC', 'CPC']).withMessage('Invalid actCode'),
+    query('chapter').optional().isNumeric().withMessage('Chapter must be a number'),
+    query('sortBy').optional().trim(),
+    query('sortOrder').optional().isIn(['asc', 'desc']).withMessage('sortOrder must be asc or desc'),
+    query('isArchived').optional().isBoolean().withMessage('isArchived must be a boolean')
+];
+
 module.exports = {
     validateSectionId,
     createSectionValidator,
-    updateSectionValidator
+    updateSectionValidator,
+    sectionQueryValidator
 };
