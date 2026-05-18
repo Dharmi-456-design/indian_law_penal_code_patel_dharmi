@@ -29,11 +29,13 @@ const authRoutes = require('./src/routes/v1/auth.routes');
 const sectionRoutes = require('./src/routes/v1/section.routes');
 const searchRoutes = require('./src/routes/v1/search.routes');
 const actRoutes = require('./src/routes/v1/act.routes');
+const userRoutes = require('./src/routes/v1/user.routes');
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/sections', sectionRoutes);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/acts', actRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // Health Check
 app.get('/api/v1/health', (req, res) => {
