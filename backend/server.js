@@ -32,6 +32,7 @@ const actRoutes = require('./src/routes/v1/act.routes');
 const userRoutes = require('./src/routes/v1/user.routes');
 const bookmarkRoutes = require('./src/routes/v1/bookmark.routes');
 const analyticsRoutes = require('./src/routes/v1/analytics.routes');
+const noteRoutes = require('./src/routes/v1/note.routes');
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/sections', sectionRoutes);
@@ -40,6 +41,7 @@ app.use('/api/v1/acts', actRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/bookmarks', bookmarkRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/notes', noteRoutes);
 
 // Health Check
 app.get('/api/v1/health', (req, res) => {
