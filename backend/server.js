@@ -31,6 +31,7 @@ const searchRoutes = require('./src/routes/v1/search.routes');
 const actRoutes = require('./src/routes/v1/act.routes');
 const userRoutes = require('./src/routes/v1/user.routes');
 const bookmarkRoutes = require('./src/routes/v1/bookmark.routes');
+const analyticsRoutes = require('./src/routes/v1/analytics.routes');
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/sections', sectionRoutes);
@@ -38,6 +39,7 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/acts', actRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/bookmarks', bookmarkRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
 
 // Health Check
 app.get('/api/v1/health', (req, res) => {
@@ -50,3 +52,6 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
+
+module.exports = app;
+

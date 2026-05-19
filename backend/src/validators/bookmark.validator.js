@@ -1,5 +1,5 @@
 const { body, param, query } = require('express-validator');
-const { validate } = require('../middlewares/validate.middleware');
+const validate = require('../middlewares/validate.middleware');
 const mongoose = require('mongoose');
 
 // Helper to validate MongoDB ObjectId
