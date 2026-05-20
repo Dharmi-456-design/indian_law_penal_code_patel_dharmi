@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const sectionController = require('../../controllers/section.controller');
 const searchController = require('../../controllers/search.controller');
+const actController = require('../../controllers/act.controller');
 const { protect, restrictTo } = require('../../middlewares/auth.middleware');
 const validate = require('../../middlewares/validate.middleware');
 const {
@@ -18,6 +19,7 @@ router.use(protect);
 // Publicly readable (authenticated users)
 router.get('/', sectionQueryValidator, validate, sectionController.getAllSections);
 router.get('/search', searchValidator, validate, searchController.searchSections);
+router.get('/act/:actCode', actController.getActSections);
 router.get('/recent', sectionController.getRecentSections);
 router.get('/trending', sectionController.getTrendingSections);
 router.get('/random', sectionController.getRandomSection);
