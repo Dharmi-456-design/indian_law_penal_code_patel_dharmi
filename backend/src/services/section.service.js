@@ -105,7 +105,7 @@ const deleteSectionPermanently = async (id) => {
  * Replace entire section (PUT)
  */
 const replaceSection = async (id, sectionData) => {
-    const section = await Section.findByIdAndReplace(id, sectionData, { new: true });
+    const section = await Section.findOneAndReplace({ _id: id }, sectionData, { new: true });
     if (!section) throw new ApiError(404, 'Section not found');
     return section;
 };

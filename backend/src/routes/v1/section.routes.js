@@ -24,6 +24,9 @@ router.get('/recent', sectionController.getRecentSections);
 router.get('/trending', sectionController.getTrendingSections);
 router.get('/random', sectionController.getRandomSection);
 
+// Admin archived sections route (placed before :id wildcard to prevent routing collision)
+router.get('/archived', restrictTo('admin'), sectionQueryValidator, validate, sectionController.getArchivedSections);
+
 router.get('/:id', validateSectionId, validate, sectionController.getSection);
 router.get('/:id/exists', validateSectionId, validate, sectionController.checkExists);
 router.get('/:id/history', sectionIdParamValidator, validate, searchController.getSectionHistory);
@@ -33,7 +36,6 @@ router.get('/:id/summary', sectionIdParamValidator, validate, searchController.g
 router.use(restrictTo('admin'));
 
 router.post('/', createSectionValidator, validate, sectionController.createSection);
-router.get('/archived', sectionQueryValidator, validate, sectionController.getArchivedSections);
 
 router.route('/:id')
     .put(updateSectionValidator, validate, sectionController.replaceSection)
