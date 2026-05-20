@@ -1,0 +1,1730 @@
+openapi: 3.0.3
+info:
+  title: LexIndia API
+  description: |
+    API documentation for LexIndia, India's Premier Legal Reference Platform.
+    Allows searching, browsing, bookmarking, and annotating 2,000+ sections across 8 major Indian Acts.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local Development Server
+  - url: https://lexindia.app/api/v1
+    description: Production Server (Staging/Live)
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Create a new user account with default role of 'user'.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: Password123!
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Validation error or Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      summary: Login user
+      description: Authenticate user credentials and return access and refresh tokens.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: Password123!
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/refresh-token:
+    post:
+      summary: Refresh JWT Access Token
+      description: Exchange a valid refresh token for a new access token.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: The user's refresh token
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Access token refreshed successfully
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/me:
+    get:
+      summary: Get current user profile
+      description: Retrieve profile of the currently logged-in user.
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Current user profile details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User profile retrieved successfully
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      description: Invalidate active user tokens (client clears localStorage, server-side log update).
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Logged out successfully
+                  data:
+                    type: object
+                    nullable: true
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sections:
+    get:
+      summary: List all sections
+      description: Retrieve paginated, filterable, and sortable list of legal sections.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: query
+          description: Filter sections by act code (e.g. IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA)
+          required: false
+          schema:
+            type: string
+            enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+        - name: chapter
+          in: query
+          description: Filter sections by chapter number
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Items per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          required: false
+          schema:
+            type: string
+            default: sectionNumber
+        - name: sortOrder
+          in: query
+          description: Sorting direction
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        '200':
+          description: Sections retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Sections fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create new section
+      description: Create a new legal section entry in the database.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - actCode
+                - actName
+                - actYear
+                - sectionNumber
+                - sectionTitle
+                - sectionDesc
+              properties:
+                actCode:
+                  type: string
+                  enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+                  example: IPC
+                actName:
+                  type: string
+                  example: Indian Penal Code
+                actYear:
+                  type: integer
+                  example: 1860
+                chapter:
+                  type: integer
+                  nullable: true
+                  example: 2
+                chapterTitle:
+                  type: string
+                  nullable: true
+                  example: General Explanations
+                sectionNumber:
+                  type: string
+                  example: "12"
+                sectionTitle:
+                  type: string
+                  example: Public Servant
+                sectionDesc:
+                  type: string
+                  example: The words 'public servant' denote a person falling under any of the descriptions...
+      responses:
+        '201':
+          description: Section created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Section created successfully
+                  data:
+                    $ref: '#/components/schemas/Section'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden (Admin only)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sections/search:
+    get:
+      summary: Full-text search sections
+      description: Search sections by text query within a specific act code.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: Search term query (minimum 2 characters)
+          required: true
+          schema:
+            type: string
+            minLength: 2
+            example: public servant
+        - name: actCode
+          in: query
+          description: Limit search to specific act
+          required: false
+          schema:
+            type: string
+            enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Search results fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sections/act/{actCode}:
+    get:
+      summary: All sections of an act
+      description: Retrieve all sections associated with a specific Act.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: path
+          description: The Act Code (e.g. IPC, CrPC, CPC)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sections of the act retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Sections for act retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+
+  /sections/recent:
+    get:
+      summary: Get recently added sections
+      description: Retrieve the 20 most recently inserted sections.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Recent sections retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Recent sections fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+
+  /sections/trending:
+    get:
+      summary: Get trending sections
+      description: Retrieve the top 10 most viewed sections based on viewCount.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Trending sections retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Trending sections fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+
+  /sections/random:
+    get:
+      summary: Get a random section
+      description: Retrieve a random legal section from the database.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Random section retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Random section fetched successfully
+                  data:
+                    $ref: '#/components/schemas/Section'
+
+  /sections/archived:
+    get:
+      summary: Get archived sections
+      description: Retrieve paginated list of archived sections (soft deleted).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Archived sections retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Archived sections fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '403':
+          description: Forbidden (Admin only)
+
+  /sections/{id}:
+    get:
+      summary: Get single section details
+      description: Retrieve detailed information for a single section by MongoDB ObjectId. Increments the view count.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Section retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Section fetched successfully
+                  data:
+                    $ref: '#/components/schemas/Section'
+        '404':
+          description: Section not found
+
+    put:
+      summary: Replace section details
+      description: Replace all details of an existing section (Admin only).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - actCode
+                - actName
+                - actYear
+                - sectionNumber
+                - sectionTitle
+                - sectionDesc
+              properties:
+                actCode:
+                  type: string
+                  enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+                actName:
+                  type: string
+                actYear:
+                  type: integer
+                chapter:
+                  type: integer
+                  nullable: true
+                chapterTitle:
+                  type: string
+                  nullable: true
+                sectionNumber:
+                  type: string
+                sectionTitle:
+                  type: string
+                sectionDesc:
+                  type: string
+      responses:
+        '200':
+          description: Section replaced successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Section replaced successfully
+                  data:
+                    $ref: '#/components/schemas/Section'
+        '403':
+          description: Forbidden (Admin only)
+        '404':
+          description: Section not found
+
+    patch:
+      summary: Partial update section
+      description: Modify selected fields of a section (Admin only).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sectionTitle:
+                  type: string
+                sectionDesc:
+                  type: string
+                chapter:
+                  type: integer
+                  nullable: true
+                chapterTitle:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Section updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Section updated successfully
+                  data:
+                    $ref: '#/components/schemas/Section'
+        '403':
+          description: Forbidden (Admin only)
+        '404':
+          description: Section not found
+
+    delete:
+      summary: Soft delete section
+      description: Archive the section (marks isArchived as true) (Admin only).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Section deleted (archived) successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Section deleted successfully
+
+  /sections/{id}/exists:
+    get:
+      summary: Check section existence
+      description: Check if a section exists by its MongoDB ObjectId.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Return true or false
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Check completed
+                  data:
+                    type: object
+                    properties:
+                      exists:
+                        type: boolean
+                        example: true
+
+  /sections/{id}/history:
+    get:
+      summary: Section update history
+      description: Retrieve audit logs relating to mutations performed on the section.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Audit logs array returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: History retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditLog'
+
+  /sections/{id}/summary:
+    get:
+      summary: Get section short summary
+      description: Retrieve the first 200 characters of the section description.
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: MongoDB ObjectId of the section
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Short summary retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Summary fetched successfully
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      sectionTitle:
+                        type: string
+                      summary:
+                        type: string
+                        example: "This section defines the scope..."
+
+  /sections/{id}/archive:
+    patch:
+      summary: Archive section
+      description: Manually archive a section (Admin only).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Section archived successfully
+
+  /sections/{id}/restore:
+    patch:
+      summary: Restore section
+      description: Restore an archived section (marks isArchived as false) (Admin only).
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: Section restored successfully
+
+  /search/global:
+    get:
+      summary: Global cross-act search
+      description: Perform full-text search across all acts. (Optional authorization).
+      tags:
+        - Search
+      parameters:
+        - name: q
+          in: query
+          description: Search term query
+          required: true
+          schema:
+            type: string
+            example: theft
+      responses:
+        '200':
+          description: Search results grouped by act
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Global search results fetched successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+
+  /acts:
+    get:
+      summary: List all acts
+      description: Retrieve metadata of all 8 Indian Acts supported.
+      tags:
+        - Acts
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Acts metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Acts metadata retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Act'
+
+  /acts/{actCode}:
+    get:
+      summary: Get act details
+      description: Retrieve details for a specific Act by its Code.
+      tags:
+        - Acts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: path
+          required: true
+          schema:
+            type: string
+            example: IPC
+      responses:
+        '200':
+          description: Act retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Act'
+        '404':
+          description: Act not found
+
+  /acts/{actCode}/sections:
+    get:
+      summary: Get act sections paginated
+      description: Retrieve all sections for a specific act.
+      tags:
+        - Acts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sections retrieved successfully
+
+  /acts/{actCode}/chapters:
+    get:
+      summary: Get act chapters list
+      description: Retrieve list of chapters under a specific act with counts.
+      tags:
+        - Acts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chapters details list
+
+  /acts/{actCode}/stats:
+    get:
+      summary: Get act stats aggregation
+      description: Fetch count statistics and summaries for the act (e.g. section/chapter counts).
+      tags:
+        - Acts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Act stats retrieved successfully
+
+  /users/me:
+    patch:
+      summary: Update own profile
+      description: Modify profile fields like name or password.
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Jane Doe
+                email:
+                  type: string
+                  format: email
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Profile updated successfully
+
+  /users:
+    get:
+      summary: List all users
+      description: Retrieve paginated list of all users, searchable by name/email (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden (Admin only)
+
+  /users/stats:
+    get:
+      summary: Get users growth metrics
+      description: Retrieve registration rates and count totals (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Stats retrieved successfully
+
+  /users/{id}:
+    get:
+      summary: Get single user info
+      description: Get user details by ObjectId (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User object returned
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete user
+      description: Perform soft delete on user profile (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User soft deleted successfully
+
+  /users/{id}/role:
+    patch:
+      summary: Modify user role
+      description: Promote or demote user role (user/admin) (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role
+              properties:
+                role:
+                  type: string
+                  enum: [user, admin]
+      responses:
+        '200':
+          description: User role updated successfully
+
+  /users/{id}/status:
+    patch:
+      summary: Toggle user activity status
+      description: Activate or deactivate user login access (Admin only).
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User active status toggled successfully
+
+  /bookmarks:
+    get:
+      summary: Get user bookmarks
+      description: Retrieve list of sections bookmarked by the active user.
+      tags:
+        - Bookmarks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: actCode
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Bookmarks list returned
+
+  /bookmarks/{sectionId}:
+    post:
+      summary: Bookmark a section
+      description: Add a bookmark record linked to the section (upsert logic).
+      tags:
+        - Bookmarks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Bookmark added successfully
+        '200':
+          description: Bookmark updated (if already existed)
+
+    delete:
+      summary: Remove a bookmark
+      description: Delete the bookmark linked to the section.
+      tags:
+        - Bookmarks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookmark removed successfully
+
+  /bookmarks/{sectionId}/note:
+    patch:
+      summary: Update bookmark note
+      description: Update private annotations on a bookmarked section.
+      tags:
+        - Bookmarks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - note
+              properties:
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Bookmark note updated successfully
+
+  /bookmarks/{sectionId}/check:
+    get:
+      summary: Check bookmark status
+      description: Check whether a section is bookmarked by the logged-in user.
+      tags:
+        - Bookmarks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookmark status checked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      isBookmarked:
+                        type: boolean
+
+  /notes:
+    get:
+      summary: Get user notes
+      description: Retrieve list of personal section annotations/notes created by the user.
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Notes list retrieved successfully
+
+    post:
+      summary: Add a section note
+      description: Create a private note associated with a legal section.
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sectionId
+                - noteText
+              properties:
+                sectionId:
+                  type: string
+                  pattern: '^[0-9a-fA-F]{24}$'
+                noteText:
+                  type: string
+      responses:
+        '201':
+          description: Note added successfully
+
+  /notes/{id}:
+    put:
+      summary: Edit note
+      description: Modify the text of a personal note.
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - noteText
+              properties:
+                noteText:
+                  type: string
+      responses:
+        '200':
+          description: Note modified successfully
+
+    delete:
+      summary: Delete note
+      description: Remove the user note.
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Note deleted successfully
+
+  /analytics/overview:
+    get:
+      summary: Overview platform stats
+      description: Key aggregate counts (users, sections, bookmarks, notes) (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Overview metrics returned
+
+  /analytics/acts:
+    get:
+      summary: Section count breakdown by act
+      description: Section details counts grouped by act code (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Acts distribution returned
+
+  /analytics/chapters:
+    get:
+      summary: Chapters aggregation
+      description: Retrieve section details grouped by chapters (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Chapter break-down returned
+
+  /analytics/users:
+    get:
+      summary: User growth trend
+      description: User registration rate trends over time (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Growth trend array returned
+
+  /analytics/top-viewed:
+    get:
+      summary: Top viewed sections
+      description: List of sections ordered by view count desc (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Sections list returned
+
+  /analytics/search-trends:
+    get:
+      summary: Search query volume trend
+      description: Daily search logs count (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Search trend timeline
+
+  /analytics/top-queries:
+    get:
+      summary: Most common query strings
+      description: Terms list ranking query frequency (Admin only).
+      tags:
+        - Analytics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Queries ranks returned
+
+  /health:
+    get:
+      summary: Service health check
+      description: Return health verification status of the server.
+      tags:
+        - System
+      responses:
+        '200':
+          description: Server is online
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Server is running
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        bookmarks:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
+        lastLogin:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Section:
+      type: object
+      properties:
+        _id:
+          type: string
+        actCode:
+          type: string
+          enum: [IPC, CrPC, CPC, HMA, IDA, IEA, NIA, MVA]
+        actName:
+          type: string
+        actYear:
+          type: integer
+        chapter:
+          type: integer
+          nullable: true
+        chapterTitle:
+          type: string
+          nullable: true
+        sectionNumber:
+          type: string
+        sectionTitle:
+          type: string
+        sectionDesc:
+          type: string
+        isArchived:
+          type: boolean
+        viewCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Act:
+      type: object
+      properties:
+        _id:
+          type: string
+        actCode:
+          type: string
+        actName:
+          type: string
+        actYear:
+          type: integer
+        actNo:
+          type: string
+        totalSections:
+          type: integer
+        description:
+          type: string
+
+    AuditLog:
+      type: object
+      properties:
+        _id:
+          type: string
+        adminId:
+          type: string
+        action:
+          type: string
+        targetCollection:
+          type: string
+        targetId:
+          type: string
+        details:
+          type: string
+        ip:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 575
+        totalPages:
+          type: integer
+          example: 29
+
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Registration successful
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Error message details"
+        errors:
+          type: array
+          items:
+            type: object
+          example: []
+        stack:
+          type: string
+          example: "Error: Stack trace details..."
