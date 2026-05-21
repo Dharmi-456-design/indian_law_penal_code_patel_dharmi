@@ -1,5 +1,0 @@
-# Ignore backend configuration & dependencies
-backend/.env
-backend/node_modules/
-backend/coverage/
-backend/docs/
