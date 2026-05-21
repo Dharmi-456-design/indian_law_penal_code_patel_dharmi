@@ -1,6 +1,5 @@
 .env
 node_modules
-tests/
 src/data/
 coverage/
 docs/
