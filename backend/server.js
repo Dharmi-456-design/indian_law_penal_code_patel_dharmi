@@ -69,9 +69,11 @@ app.get('/api/v1/health', (req, res) => {
 // Error Handler
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+}
 
 module.exports = app;
 
