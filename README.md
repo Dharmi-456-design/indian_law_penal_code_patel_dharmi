@@ -41,7 +41,7 @@
 | 📦 **Frontend Repository** | Coming Soon |
 | 🗄️ **Backend Repository** | https://github.com/Dharmi-456-design/indian_law_penal_code_patel_dharmi/tree/main/backend |
 | ▶️ **YouTube Demo** | Coming Soon |
-| 📄 **API Health Check** | Coming Soon |
+| 📄 **API Health Check** | https://documenter.getpostman.com/view/50839318/2sBXwnuCGK |
 
 ---
 
