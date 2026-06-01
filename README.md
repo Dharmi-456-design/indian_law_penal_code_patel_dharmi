@@ -47,15 +47,20 @@
 
 ## 📖 About the Project
 
-**LexIndia** is a full-stack legal reference platform built for students, lawyers, researchers, and citizens who need fast, reliable access to Indian law. It aggregates **2,043+ sections** across **8 major Indian Acts** into a single searchable, bookmarkable, and annotatable interface.
+**LexIndia** LexIndia – India's Law, Decoded, a modern legal reference platform designed to make Indian laws easily searchable, accessible, and understandable for students, lawyers, researchers, and citizens.
 
-Built over 30 days (13 May – 13 June 2026) as a production-grade MERN application with:
+The project is built using Node.js, Express.js, MongoDB, React, Redux Toolkit, and Tailwind CSS. It contains legal information from **8** major Indian Acts with more than **2,000** law sections.
 
-- Role-based access control (Admin & User)
-- Full-text cross-act search powered by MongoDB `$text` indexes
-- Personal bookmarks and notes per section
-- Admin analytics dashboard with Recharts visualizations
-- CI/CD via GitHub Actions → Vercel (frontend) + Render (backend)
+## Problem 
+
+Legal information in India is spread across multiple Acts and documents, making legal research slow and difficult.
+Users often struggle to quickly find, organize, and access relevant legal sections when needed.
+
+## Solution 
+
+LexIndia centralizes major Indian laws into a single searchable platform with bookmarks and notes.
+It enables users to find legal information faster, manage references efficiently, and simplify legal research. 🚀
+
 
 ---
 
