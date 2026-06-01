@@ -37,7 +37,7 @@
 |---|---|
 | 🌐 **Live App (Production)** | Coming Soon |
 | ▲ **Frontend Deploy (Vercel)** | Coming Soon |
-| 🚀 **Backend API (Render)** | Coming Soon |
+| 🚀 **Backend API (Render)** | https://lexindia-backend-dharmi.onrender.com/ |
 | 📦 **Frontend Repository** | Coming Soon |
 | 🗄️ **Backend Repository** | Coming Soon |
 | ▶️ **YouTube Demo** | Coming Soon |
