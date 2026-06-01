@@ -37,11 +37,11 @@
 |---|---|
 | 🌐 **Live App (Production)** | Coming Soon |
 | ▲ **Frontend Deploy (Vercel)** | Coming Soon |
-| 🚀 **Backend API (Render)** | Coming Soon |
+| 🚀 **Backend API (Render)** | https://lexindia-backend-dharmi.onrender.com/ |
 | 📦 **Frontend Repository** | Coming Soon |
-| 🗄️ **Backend Repository** | Coming Soon |
+| 🗄️ **Backend Repository** | https://github.com/Dharmi-456-design/indian_law_penal_code_patel_dharmi/tree/main/backend |
 | ▶️ **YouTube Demo** | Coming Soon |
-| 📄 **API Health Check** | Coming Soon |
+| 📄 **API Health Check** | https://documenter.getpostman.com/view/50839318/2sBXwnuCGK |
 
 ---
 
