@@ -310,26 +310,6 @@ All responses follow this envelope:
 | `GET` | `/analytics/top-queries` | Admin | Most common search terms |
 
 
-### Sections Schema (Unified)
-
-json
-{
-  "actCode":       "enum: ['IPC','CrPC','CPC','HMA','IDA','IEA','NIA','MVA']",
-  "actName":       "string",
-  "actYear":       "number",
-  "chapter":       "number | null",
-  "chapterTitle":  "string | null",
-  "sectionNumber": "string (required)",
-  "sectionTitle":  "string (required)",
-  "sectionDesc":   "string (required)",
-  "isArchived":    "boolean, default: false",
-  "viewCount":     "number, default: 0"
-}
-
-
-*Indexes:* actCode, sectionNumber, { actCode, sectionNumber } (compound unique), $text on sectionTitle + sectionDesc
-
----
 
 ## 📁 Project Structure
 
