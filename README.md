@@ -12,7 +12,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Coming%20Soon-4f46e5?style=for-the-badge)]()
 [![Frontend](https://img.shields.io/badge/▲%20Vercel-Frontend%20Deploy-000000?style=for-the-badge&logo=vercel)]()
-[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)]()
+[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)](https://lexindia-backend-dharmi.onrender.com/)
 [![YouTube](https://img.shields.io/badge/▶%20YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)]()
 [![GitHub Repo](https://img.shields.io/badge/⭐%20GitHub-Source%20Code-181717?style=for-the-badge&logo=github)]()
 
@@ -37,7 +37,7 @@
 |---|---|
 | 🌐 **Live App (Production)** | Coming Soon |
 | ▲ **Frontend Deploy (Vercel)** | Coming Soon |
-| 🚀 **Backend API (Render)** | https://lexindia-backend-dharmi.onrender.com/ |
+| 🚀 **Backend API (Render)** | Coming Soon |
 | 📦 **Frontend Repository** | Coming Soon |
 | 🗄️ **Backend Repository** | https://github.com/Dharmi-456-design/indian_law_penal_code_patel_dharmi/tree/main/backend |
 | ▶️ **YouTube Demo** | Coming Soon |
