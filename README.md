@@ -12,7 +12,7 @@
 
 [![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Coming%20Soon-4f46e5?style=for-the-badge)]()
 [![Frontend](https://img.shields.io/badge/▲%20Vercel-Frontend%20Deploy-000000?style=for-the-badge&logo=vercel)]()
-[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)]()
+[![Backend](https://img.shields.io/badge/🚀%20Render-Backend%20API-46e3b7?style=for-the-badge&logo=render)](https://lexindia-backend-dharmi.onrender.com/)
 [![YouTube](https://img.shields.io/badge/▶%20YouTube-Demo%20Video-FF0000?style=for-the-badge&logo=youtube)]()
 [![GitHub Repo](https://img.shields.io/badge/⭐%20GitHub-Source%20Code-181717?style=for-the-badge&logo=github)]()
 
@@ -37,7 +37,7 @@
 |---|---|
 | 🌐 **Live App (Production)** | Coming Soon |
 | ▲ **Frontend Deploy (Vercel)** | Coming Soon |
-| 🚀 **Backend API (Render)** | https://lexindia-backend-dharmi.onrender.com/ |
+| 🚀 **Backend API (Render)** | Coming Soon |
 | 📦 **Frontend Repository** | Coming Soon |
 | 🗄️ **Backend Repository** | https://github.com/Dharmi-456-design/indian_law_penal_code_patel_dharmi/tree/main/backend |
 | ▶️ **YouTube Demo** | Coming Soon |
@@ -77,7 +77,7 @@ It enables users to find legal information faster, manage references efficiently
 ---
 
 ## 🛠 Tech Stack
-
+ 
 ### Backend
 | Technology | Purpose |
 |---|---|
@@ -90,7 +90,7 @@ It enables users to find legal information faster, manage references efficiently
 | **express-rate-limit** | Rate limiting (100 req / 15 min) |
 | **Morgan** | HTTP request logging |
 | **GitHub Actions** | CI/CD pipeline — lint → test → deploy |
-
+ 
 ### Frontend
 | Technology | Purpose |
 |---|---|
@@ -101,7 +101,7 @@ It enables users to find legal information faster, manage references efficiently
 | **Axios** | HTTP client with interceptors |
 | **Formik + Yup** | Form handling & schema validation |
 | **Recharts** | Data visualization — bar, line, pie charts |
-
+ 
 ### Deployment & Infrastructure
 | Service | Role |
 |---|---|
@@ -109,6 +109,7 @@ It enables users to find legal information faster, manage references efficiently
 | **Render** | Backend Node.js hosting |
 | **MongoDB Atlas** | Managed cloud database |
 | **GitHub Actions** | Automated CI/CD pipelines |
+ 
 
 ---
 
@@ -315,58 +316,7 @@ All responses follow this envelope:
 | `GET` | `/analytics/search-trends` | Admin | Daily search count for last N days |
 | `GET` | `/analytics/top-queries` | Admin | Most common search terms |
 
-### ⚙️ System
 
-| Method | Endpoint | Access | Description |
-|---|---|---|---|
-| `GET` | `/health` | Public | Server health check |
-
----
-
-## 🗄 Database Design
-
-### Collections Overview
-
-```
-users       — Auth, roles, profile
-sections    — Unified store for all 8 acts (~2,043 documents)
-acts        — Act metadata (name, year, act number)
-bookmarks   — User ↔ Section many-to-many
-notes       — User personal notes per section
-searchLogs  — Search query history + result counts
-auditLogs   — Admin mutation tracking with IP
-```
-
-### Relationships
-
-```
-users    (1) ──── (many) notes
-users    (1) ──── (many) bookmarks
-sections (1) ──── (many) notes
-sections (1) ──── (many) bookmarks
-users  (many) ─── (many) sections   [via bookmarks]
-```
-
-### Sections Schema (Unified)
-
-```json
-{
-  "actCode":       "enum: ['IPC','CrPC','CPC','HMA','IDA','IEA','NIA','MVA']",
-  "actName":       "string",
-  "actYear":       "number",
-  "chapter":       "number | null",
-  "chapterTitle":  "string | null",
-  "sectionNumber": "string (required)",
-  "sectionTitle":  "string (required)",
-  "sectionDesc":   "string (required)",
-  "isArchived":    "boolean, default: false",
-  "viewCount":     "number, default: 0"
-}
-```
-
-**Indexes:** `actCode`, `sectionNumber`, `{ actCode, sectionNumber }` (compound unique), `$text` on `sectionTitle + sectionDesc`
-
----
 
 ## 📁 Project Structure
 
