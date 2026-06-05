@@ -77,7 +77,7 @@ It enables users to find legal information faster, manage references efficiently
 ---
 
 ## 🛠 Tech Stack
-
+ 
 ### Backend
 | Technology | Purpose |
 |---|---|
@@ -85,8 +85,12 @@ It enables users to find legal information faster, manage references efficiently
 | **MongoDB Atlas** | Cloud NoSQL database (M0 free → M2 production) |
 | **Mongoose** | ODM — schema modeling & query building |
 | **JWT + bcryptjs** | Authentication & password hashing (saltRounds: 12) |
-
-
+| **express-validator** | Request input validation & sanitization |
+| **Helmet.js** | Security HTTP headers |
+| **express-rate-limit** | Rate limiting (100 req / 15 min) |
+| **Morgan** | HTTP request logging |
+| **GitHub Actions** | CI/CD pipeline — lint → test → deploy |
+ 
 ### Frontend
 | Technology | Purpose |
 |---|---|
@@ -94,8 +98,10 @@ It enables users to find legal information faster, manage references efficiently
 | **Tailwind CSS + MUI** | Utility-first styling + Material Design components |
 | **Redux Toolkit** | Global state management |
 | **React Router v6** | Client-side routing with protected routes |
-|
-
+| **Axios** | HTTP client with interceptors |
+| **Formik + Yup** | Form handling & schema validation |
+| **Recharts** | Data visualization — bar, line, pie charts |
+ 
 ### Deployment & Infrastructure
 | Service | Role |
 |---|---|
@@ -103,6 +109,7 @@ It enables users to find legal information faster, manage references efficiently
 | **Render** | Backend Node.js hosting |
 | **MongoDB Atlas** | Managed cloud database |
 | **GitHub Actions** | Automated CI/CD pipelines |
+ 
 
 ---
 
@@ -308,7 +315,6 @@ All responses follow this envelope:
 | `GET` | `/analytics/top-viewed` | Admin | Top viewed sections |
 | `GET` | `/analytics/search-trends` | Admin | Daily search count for last N days |
 | `GET` | `/analytics/top-queries` | Admin | Most common search terms |
-
 
 
 
