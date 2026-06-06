@@ -1,5 +1,6 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import PageWrapper from './components/layout/PageWrapper.jsx';
 
 /* ── Public Pages ── */
 import LandingPage from './pages/public/LandingPage.jsx';
@@ -23,6 +24,14 @@ import SectionsPage from './pages/dashboard/admin/SectionsPage.jsx';
 import AnalyticsPage from './pages/dashboard/admin/AnalyticsPage.jsx';
 import SearchLogsPage from './pages/dashboard/admin/SearchLogsPage.jsx';
 
+const DashboardLayout = () => {
+  return (
+    <PageWrapper>
+      <Outlet />
+    </PageWrapper>
+  );
+};
+
 function AppRouter() {
   return (
     <Routes>
@@ -31,21 +40,24 @@ function AppRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* User Dashboard Routes */}
-      <Route path="/dashboard" element={<UserDashboard />} />
-      <Route path="/dashboard/browse" element={<BrowsePage />} />
-      <Route path="/dashboard/section/:id" element={<SectionDetail />} />
-      <Route path="/dashboard/bookmarks" element={<BookmarksPage />} />
-      <Route path="/dashboard/notes" element={<NotesPage />} />
-      <Route path="/dashboard/profile" element={<ProfilePage />} />
+      {/* Dashboard Routes with Layout */}
+      <Route element={<DashboardLayout />}>
+        {/* User Dashboard Routes */}
+        <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/dashboard/browse" element={<BrowsePage />} />
+        <Route path="/dashboard/section/:id" element={<SectionDetail />} />
+        <Route path="/dashboard/bookmarks" element={<BookmarksPage />} />
+        <Route path="/dashboard/notes" element={<NotesPage />} />
+        <Route path="/dashboard/profile" element={<ProfilePage />} />
 
-      {/* Admin Dashboard Routes */}
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/users" element={<UsersPage />} />
-      <Route path="/admin/acts" element={<ActsPage />} />
-      <Route path="/admin/sections" element={<SectionsPage />} />
-      <Route path="/admin/analytics" element={<AnalyticsPage />} />
-      <Route path="/admin/search-logs" element={<SearchLogsPage />} />
+        {/* Admin Dashboard Routes */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<UsersPage />} />
+        <Route path="/admin/acts" element={<ActsPage />} />
+        <Route path="/admin/sections" element={<SectionsPage />} />
+        <Route path="/admin/analytics" element={<AnalyticsPage />} />
+        <Route path="/admin/search-logs" element={<SearchLogsPage />} />
+      </Route>
 
       {/* 404 Catch-all */}
       <Route path="*" element={<NotFound />} />
