@@ -19,33 +19,33 @@ const LandingPage = () => {
   }, [dark]);
 
   return (
-    <div className="min-h-screen bg-[#f5f3ef] dark:bg-[#111415] text-[#1a1a1a] dark:text-[#e1e3e4] font-sans">
+    <div className="min-h-screen bg-[#f5f3ef] dark:bg-[#111415] text-[#1a1a1a] dark:text-[#e1e3e4]"
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-      {/* ── Header ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#111415]/95 backdrop-blur-md border-b border-gray-200 dark:border-[#40484a] shadow-sm">
+      {/* ── HEADER ── */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#e5e7eb] dark:border-[#40484a]"
+        style={{ backgroundColor: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(12px)' }}
+        id="main-header">
+        {/* Override dark bg via inline for alpha support */}
+        <style>{`.dark #main-header { background-color: rgba(17,20,21,0.96) !important; }`}</style>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer">
-            <span
-              className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] text-[22px]"
-              style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
-            >
+          <div className="flex items-center gap-2 cursor-pointer select-none">
+            <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]"
+              style={{ fontSize: '22px', fontVariationSettings: "'FILL' 1, 'wght' 500" }}>
               gavel
             </span>
-            <span className="text-[17px] font-bold text-[#1a1a1a] dark:text-white tracking-tight">
+            <span className="text-[17px] font-bold text-[#111827] dark:text-white tracking-tight">
               LexIndia Legal Explorer
             </span>
           </div>
 
-          {/* Nav Links */}
+          {/* Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {['Research', 'Analytics', 'Solutions', 'Pricing'].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors"
-              >
+            {['Research', 'Analytics', 'Solutions', 'Pricing'].map(item => (
+              <a key={item} href="#"
+                className="text-sm font-medium text-[#6b7280] dark:text-[#9ca3af] hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors duration-150">
                 {item}
               </a>
             ))}
@@ -53,216 +53,209 @@ const LandingPage = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            {/* Theme Toggle */}
-            <button
-              id="theme-toggle"
-              onClick={() => setDark(!dark)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#1d2021] transition-colors"
-              aria-label="Toggle theme"
-            >
-              <span className="material-symbols-outlined text-[20px] text-gray-600 dark:text-gray-300">
+            {/* Theme toggle */}
+            <button id="theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle theme"
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors">
+              <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]"
+                style={{ fontSize: '20px' }}>
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <button className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors">
+            <button className="hidden sm:block text-sm font-medium text-[#374151] dark:text-[#d1d5db] hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors">
               Login
             </button>
-            <button className="text-sm font-semibold bg-[#c9a84c] dark:bg-[#c9a84c] text-white px-5 py-2 rounded-lg hover:bg-[#b8943a] transition-colors shadow-sm">
+            <button className="text-sm font-semibold px-5 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90 active:scale-95"
+              style={{ backgroundColor: '#c9a84c', boxShadow: '0 1px 3px rgba(201,168,76,0.3)' }}>
               Register
             </button>
           </div>
         </div>
       </header>
 
-      {/* ── Main Content ── */}
+      {/* ── MAIN ── */}
       <main className="pt-16">
 
-        {/* Hero Section */}
+        {/* HERO */}
         <section className="max-w-5xl mx-auto px-6 pt-24 pb-16 flex flex-col items-center text-center">
 
-          {/* Trusted Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-300 dark:border-[#40484a] bg-white dark:bg-[#1d2021] shadow-sm mb-8">
-            <span
-              className="material-symbols-outlined text-[15px] text-[#c9a84c] dark:text-[#e6c364]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d1d5db] dark:border-[#40484a] bg-white dark:bg-[#1d2021] shadow-sm mb-8">
+            <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]"
+              style={{ fontSize: '15px', fontVariationSettings: "'FILL' 1" }}>
               verified
             </span>
-            <span className="text-[13px] font-medium text-gray-600 dark:text-[#bfc8ca]">
+            <span className="text-[13px] font-medium text-[#6b7280] dark:text-[#bfc8ca]">
               Trusted by 50,000+ Advocates Nationwide
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-6xl font-extrabold text-[#1a1a1a] dark:text-white leading-tight mb-6 max-w-3xl">
+          <h1 className="text-5xl md:text-[56px] font-extrabold text-[#111827] dark:text-white leading-[1.1] tracking-tight mb-6 max-w-3xl">
             Empowering Legal Minds with{' '}
-            <span className="text-[#c9a84c] dark:text-[#e6c364] relative inline-block">
+            <span className="relative inline-block text-[#c9a84c] dark:text-[#e6c364]">
               Precision
-              <svg
-                className="absolute w-full h-[10px] -bottom-1 left-0 text-[#c9a84c] dark:text-[#e6c364] opacity-80"
-                preserveAspectRatio="none"
-                viewBox="0 0 100 10"
-                aria-hidden="true"
-              >
-                <path d="M0 5 Q 50 10 100 5" fill="none" stroke="currentColor" strokeWidth="5" />
+              <svg className="absolute w-full left-0 -bottom-1 opacity-75"
+                style={{ height: '10px' }}
+                preserveAspectRatio="none" viewBox="0 0 100 10" aria-hidden="true">
+                <path d="M0 6 Q 50 10 100 6" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
               </svg>
             </span>
           </h1>
 
-          {/* Subheading */}
-          <p className="text-lg text-gray-600 dark:text-[#bfc8ca] max-w-2xl mb-12 leading-relaxed">
-            The ultimate digital parchment for modern practitioners. Uncover precedents, analyze case
-            histories, and build airtight arguments with intuitive AI-driven research.
+          {/* Sub */}
+          <p className="text-[17px] leading-relaxed text-[#6b7280] dark:text-[#bfc8ca] max-w-xl mb-12">
+            The ultimate digital parchment for modern practitioners. Uncover precedents, analyze
+            case histories, and build airtight arguments with intuitive AI-driven research.
           </p>
 
           {/* Search Bar */}
-          <div className="w-full max-w-2xl flex items-center bg-white dark:bg-[#0c0f10] border border-gray-300 dark:border-[#40484a] rounded-xl shadow-lg overflow-hidden mb-6">
-            <span className="material-symbols-outlined text-gray-400 dark:text-gray-600 ml-5 text-[22px] flex-shrink-0">
+          <div className="w-full max-w-2xl flex items-center rounded-xl overflow-hidden mb-6 border border-[#d1d5db] dark:border-[#40484a] bg-white dark:bg-[#0c0f10]"
+            style={{ boxShadow: '0 8px 30px -8px rgba(0,0,0,0.15)' }}>
+            <span className="material-symbols-outlined text-[#9ca3af] dark:text-[#6b7280] ml-5 flex-shrink-0"
+              style={{ fontSize: '22px' }}>
               search
             </span>
-            <input
-              id="search-input"
-              type="text"
+            <input id="search-input" type="text"
               placeholder="Search Acts, Sections, or Precedents..."
-              className="flex-1 bg-transparent px-4 py-4 text-base text-[#1a1a1a] dark:text-[#e1e3e4] placeholder:text-gray-400 dark:placeholder:text-gray-600 outline-none border-none"
-            />
-            <button
-              id="search-btn"
-              className="flex-shrink-0 m-2 bg-[#1a1a1a] dark:bg-[#c9a84c] text-white dark:text-[#1a1a1a] px-7 py-3 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
-            >
+              className="flex-1 bg-transparent px-4 py-4 text-[15px] text-[#111827] dark:text-[#e1e3e4] placeholder:text-[#9ca3af] dark:placeholder:text-[#6b7280] outline-none border-none" />
+            <button id="search-btn"
+              className="flex-shrink-0 m-2 px-7 py-3 rounded-lg text-sm font-bold transition-opacity hover:opacity-90 text-white dark:text-[#111827]"
+              style={{ backgroundColor: dark ? '#c9a84c' : '#111827' }}>
               Search
             </button>
           </div>
 
-          {/* Trending Chips */}
+          {/* Trending */}
           <div className="flex flex-wrap justify-center items-center gap-2">
-            <span className="text-xs text-gray-500 dark:text-gray-500">Trending:</span>
-            {['Constitutional Law', 'Tax Precedents 2024', 'Corporate Insolvency'].map((tag) => (
-              <a
-                key={tag}
-                href="#"
-                className="text-xs px-3 py-1.5 rounded border border-gray-300 dark:border-[#40484a] text-gray-600 dark:text-[#bfc8ca] hover:bg-gray-100 dark:hover:bg-[#1d2021] transition-colors"
-              >
+            <span className="text-xs text-[#9ca3af] dark:text-[#6b7280]">Trending:</span>
+            {['Constitutional Law', 'Tax Precedents 2024', 'Corporate Insolvency'].map(tag => (
+              <a key={tag} href="#"
+                className="text-xs px-3 py-1.5 rounded border border-[#d1d5db] dark:border-[#40484a] text-[#6b7280] dark:text-[#bfc8ca] hover:bg-[#f9fafb] dark:hover:bg-[#1d2021] transition-colors">
                 {tag}
               </a>
             ))}
           </div>
         </section>
 
-        {/* Features Section */}
+        {/* FEATURES */}
         <section className="max-w-7xl mx-auto px-6 py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#1a1a1a] dark:text-white mb-4">
+          <div className="text-center mb-14">
+            <h2 className="text-[32px] font-bold text-[#111827] dark:text-white mb-3 tracking-tight">
               A Workspace Engineered for Authority
             </h2>
-            <p className="text-base text-gray-600 dark:text-[#bfc8ca] max-w-2xl mx-auto">
-              Seamlessly transition from broad legal research to highly specific case analytics without
-              breaking your focus.
+            <p className="text-[15px] text-[#6b7280] dark:text-[#bfc8ca] max-w-2xl mx-auto leading-relaxed">
+              Seamlessly transition from broad legal research to highly specific case analytics without breaking your focus.
             </p>
           </div>
 
-          {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
 
-            {/* Instant Research Engine — Large */}
-            <div className="md:col-span-8 bg-white dark:bg-[#1d2021] rounded-xl p-8 border border-gray-200 dark:border-[#40484a] border-t-[3px] border-t-[#c9a84c] dark:border-t-[#e6c364] shadow-sm flex flex-col justify-between min-h-[260px]">
+            {/* CARD 1 — Instant Research (large) */}
+            <div className="md:col-span-8 relative bg-white dark:bg-[#1d2021] rounded-xl p-8 border border-[#e5e7eb] dark:border-[#40484a] flex flex-col justify-between overflow-hidden group"
+              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', minHeight: '260px' }}>
+              {/* Gold top accent bar */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#c9a84c] dark:bg-[#e6c364] rounded-t-xl" />
+              {/* Subtle bg orb */}
+              <div className="absolute top-0 right-0 w-56 h-56 bg-[#c9a84c] opacity-[0.03] rounded-bl-full -mr-12 -mt-12 group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none" />
+
               <div>
-                <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-[#282a2b] flex items-center justify-center mb-6 border border-gray-200 dark:border-[#40484a]">
-                  <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] text-[24px]">
-                    library_books
-                  </span>
+                <div className="w-12 h-12 rounded-xl bg-[#f9fafb] dark:bg-[#282a2b] flex items-center justify-center mb-6 border border-[#e5e7eb] dark:border-[#40484a]">
+                  <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]"
+                    style={{ fontSize: '22px' }}>library_books</span>
                 </div>
-                <h3 className="text-xl font-bold text-[#1a1a1a] dark:text-white mb-3">
+                <h3 className="text-xl font-bold text-[#111827] dark:text-white mb-3">
                   Instant Research Engine
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-[#bfc8ca] max-w-md leading-relaxed">
-                  Access millions of judgments, gazette notifications, and centralized acts in
-                  milliseconds. Our NLP engine understands legal vernacular.
+                <p className="text-sm text-[#6b7280] dark:text-[#bfc8ca] max-w-md leading-relaxed">
+                  Access millions of judgments, gazette notifications, and centralized acts in milliseconds.
+                  Our NLP engine understands legal vernacular.
                 </p>
               </div>
-              <a
-                href="#"
-                className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-[#c9a84c] dark:text-[#e6c364] hover:underline"
-              >
+              <a href="#" className="mt-8 inline-flex items-center gap-1 text-sm font-semibold text-[#c9a84c] dark:text-[#e6c364] hover:underline underline-offset-4">
                 Explore Database
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_forward</span>
               </a>
             </div>
 
-            {/* Cloud-Based Notes — Small */}
-            <div className="md:col-span-4 bg-white dark:bg-[#1d2021] rounded-xl p-8 border border-gray-200 dark:border-[#40484a] shadow-sm flex flex-col justify-between min-h-[260px]">
+            {/* CARD 2 — Cloud Notes (small) */}
+            <div className="md:col-span-4 relative bg-white dark:bg-[#1d2021] rounded-xl p-8 border border-[#e5e7eb] dark:border-[#40484a] flex flex-col justify-between"
+              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', minHeight: '260px' }}>
               <div>
-                <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-[#282a2b] flex items-center justify-center mb-6 border border-gray-200 dark:border-[#40484a]">
-                  <span className="material-symbols-outlined text-gray-500 dark:text-gray-400 text-[24px]">
-                    cloud_sync
-                  </span>
+                <div className="w-12 h-12 rounded-xl bg-[#f9fafb] dark:bg-[#282a2b] flex items-center justify-center mb-6 border border-[#e5e7eb] dark:border-[#40484a]">
+                  <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]"
+                    style={{ fontSize: '22px' }}>cloud_sync</span>
                 </div>
-                <h3 className="text-xl font-bold text-[#1a1a1a] dark:text-white mb-3">
+                <h3 className="text-xl font-bold text-[#111827] dark:text-white mb-3">
                   Cloud-Based Notes
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-[#bfc8ca] leading-relaxed">
+                <p className="text-sm text-[#6b7280] dark:text-[#bfc8ca] leading-relaxed">
                   Highlight, annotate, and organize your research directly on the parchment. Syncs
                   instantly across all your devices.
                 </p>
               </div>
             </div>
 
-            {/* Advanced Analytics — Full Width Dark Card */}
-            <div className="md:col-span-12 bg-[#2d2926] dark:bg-[#191c1d] rounded-xl p-8 border border-[#3d3830] dark:border-[#40484a] flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* CARD 3 — Analytics (full width, always dark) */}
+            <div className="md:col-span-12 rounded-xl p-8 border border-[#3d3830] flex flex-col md:flex-row items-center justify-between gap-8"
+              style={{ backgroundColor: '#2d2926' }}>
               <div className="md:w-1/2">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-[#3d3830] dark:bg-[#282a2b] text-gray-300 text-[11px] font-bold uppercase tracking-wider mb-4">
-                  <span className="material-symbols-outlined text-[14px]">insights</span>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md mb-5 text-[#d1d5db] text-[11px] font-bold uppercase tracking-widest"
+                  style={{ backgroundColor: '#3d3830' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>insights</span>
                   Premium Feature
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-4">Advanced Analytics</h3>
-                <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+                <h3 className="text-[28px] font-bold text-white mb-4 leading-tight">Advanced Analytics</h3>
+                <p className="text-sm text-[#9ca3af] mb-7 leading-relaxed">
                   Visualize judicial trends, success rates of specific arguments, and timeline analytics
                   with our masonry-style reporting dashboard.
                 </p>
-                <button className="text-sm font-bold border-2 border-[#c9a84c] text-[#c9a84c] px-6 py-3 rounded-lg hover:bg-[#c9a84c] hover:text-[#1a1a1a] transition-colors">
+                <button className="text-sm font-bold px-6 py-3 rounded-lg border-2 border-[#c9a84c] text-[#c9a84c] hover:bg-[#c9a84c] hover:text-[#1a1a1a] transition-colors duration-150">
                   View Sample Report
                 </button>
               </div>
 
-              {/* Abstract Bar Chart */}
-              <div className="md:w-1/2 h-48 bg-[#1e1a17] dark:bg-[#0c0f10] rounded-lg border border-[#3d3830] dark:border-[#40484a] p-4 flex items-end justify-around relative">
-                <div className="w-8 rounded-t-sm bg-purple-400/60 h-[40%]"></div>
-                <div className="w-8 rounded-t-sm bg-[#c9a84c] h-[60%]"></div>
-                <div className="w-8 rounded-t-sm bg-slate-400/50 h-[30%]"></div>
-                <div className="w-8 rounded-t-sm bg-[#c9a84c] h-[85%] relative">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#2d2926] dark:bg-[#282a2b] text-white text-[10px] px-2 py-0.5 rounded border border-[#3d3830] dark:border-[#40484a] whitespace-nowrap shadow">
+              {/* Bar Chart */}
+              <div className="md:w-1/2 h-48 rounded-xl border border-[#3d3830] p-4 flex items-end justify-around relative"
+                style={{ backgroundColor: '#1e1a17' }}>
+                <div className="w-8 rounded-t-sm bg-purple-400/60 h-[40%] hover:h-[44%] transition-all duration-300" />
+                <div className="w-8 rounded-t-sm h-[60%] hover:h-[64%] transition-all duration-300" style={{ backgroundColor: '#c9a84c' }} />
+                <div className="w-8 rounded-t-sm bg-slate-400/50 h-[28%] hover:h-[32%] transition-all duration-300" />
+                <div className="w-8 rounded-t-sm h-[85%] hover:h-[89%] transition-all duration-300 relative" style={{ backgroundColor: '#c9a84c' }}>
+                  <div className="absolute -top-9 left-1/2 -translate-x-1/2 text-white text-[10px] font-medium px-2 py-1 rounded whitespace-nowrap border border-[#3d3830] shadow-lg"
+                    style={{ backgroundColor: '#2d2926' }}>
                     Peak Precedent
                   </div>
                 </div>
-                <div className="w-8 rounded-t-sm bg-purple-500 h-[50%]"></div>
+                <div className="w-8 rounded-t-sm bg-purple-500 h-[50%] hover:h-[54%] transition-all duration-300" />
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA SECTION */}
         <section className="max-w-7xl mx-auto px-6 py-20">
-          <div className="bg-white dark:bg-[#1d2021] rounded-2xl px-12 py-16 text-center border border-gray-200 dark:border-[#40484a] shadow-sm relative overflow-hidden">
-            {/* Top accent line */}
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#c9a84c] via-purple-400 to-[#c9a84c]"></div>
-            <h2 className="text-3xl font-bold text-[#1a1a1a] dark:text-white mb-4">
+          <div className="relative rounded-2xl px-12 py-16 text-center border border-[#e5e7eb] dark:border-[#40484a] bg-white dark:bg-[#1d2021] overflow-hidden"
+            style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+            {/* Gradient top line */}
+            <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl"
+              style={{ background: 'linear-gradient(90deg, #c9a84c, #a78bfa, #c9a84c)' }} />
+
+            <h2 className="text-[32px] font-bold text-[#111827] dark:text-white mb-4 tracking-tight">
               Ready to Elevate Your Practice?
             </h2>
-            <p className="text-base text-gray-600 dark:text-[#bfc8ca] max-w-xl mx-auto mb-10">
-              Join thousands of legal professionals who rely on LexIndia to deliver precision and authority
-              in every case.
+            <p className="text-[15px] text-[#6b7280] dark:text-[#bfc8ca] max-w-xl mx-auto mb-10 leading-relaxed">
+              Join thousands of legal professionals who rely on LexIndia to deliver precision and
+              authority in every case.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                id="cta-register"
-                className="w-full sm:w-auto px-8 py-4 bg-[#c9a84c] text-white font-bold text-base rounded-lg hover:bg-[#b8943a] transition-colors shadow-md"
-              >
+              <button id="cta-register"
+                className="w-full sm:w-auto px-8 py-4 text-white font-bold text-[15px] rounded-xl hover:opacity-90 active:scale-95 transition-all"
+                style={{ backgroundColor: '#c9a84c', boxShadow: '0 4px 14px rgba(201,168,76,0.25)' }}>
                 Register for Free
               </button>
-              <button
-                id="cta-demo"
-                className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-gray-300 dark:border-[#40484a] text-[#1a1a1a] dark:text-white font-bold text-base rounded-lg hover:bg-gray-100 dark:hover:bg-[#282a2b] transition-colors"
-              >
+              <button id="cta-demo"
+                className="w-full sm:w-auto px-8 py-4 font-bold text-[15px] rounded-xl border-2 border-[#d1d5db] dark:border-[#40484a] text-[#111827] dark:text-white hover:bg-[#f9fafb] dark:hover:bg-[#282a2b] transition-colors">
                 Request Demo
               </button>
             </div>
@@ -270,27 +263,22 @@ const LandingPage = () => {
         </section>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="bg-[#ede9e4] dark:bg-[#0c0f10] border-t border-gray-200 dark:border-[#40484a] py-8 px-6">
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-[#e5e7eb] dark:border-[#40484a] py-8 px-6 bg-[#ede9e4] dark:bg-[#0c0f10]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-1 md:gap-4 text-center md:text-left">
-            <span className="text-base font-bold text-[#1a1a1a] dark:text-white">LexIndia</span>
-            <span className="text-xs text-gray-500 dark:text-gray-600 md:mt-0.5">
+            <span className="text-[15px] font-bold text-[#111827] dark:text-white">LexIndia</span>
+            <span className="text-[12px] text-[#9ca3af] dark:text-[#6b7280] md:mt-0.5">
               © 2024 LexIndia Legal Explorer. All rights reserved.
             </span>
           </div>
-          <nav className="flex flex-wrap justify-center md:justify-end gap-x-5 gap-y-1">
-            {['Privacy Policy', 'Terms of Service', 'Legal Disclaimer', 'Contact Support', 'API Documentation', 'Careers'].map(
-              (link) => (
-                <a
-                  key={link}
-                  href="#"
-                  className="text-xs text-gray-500 dark:text-gray-600 hover:text-[#c9a84c] dark:hover:text-[#e6c364] hover:underline transition-colors"
-                >
-                  {link}
-                </a>
-              )
-            )}
+          <nav className="flex flex-wrap justify-center md:justify-end gap-x-5 gap-y-1.5">
+            {['Privacy Policy', 'Terms of Service', 'Legal Disclaimer', 'Contact Support', 'API Documentation', 'Careers'].map(link => (
+              <a key={link} href="#"
+                className="text-[12px] text-[#9ca3af] dark:text-[#6b7280] hover:text-[#c9a84c] dark:hover:text-[#e6c364] hover:underline underline-offset-2 transition-colors">
+                {link}
+              </a>
+            ))}
           </nav>
         </div>
       </footer>
