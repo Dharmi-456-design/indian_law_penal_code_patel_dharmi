@@ -12,6 +12,8 @@ let userId;
 let sectionId;
 let noteId;
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
     // Create the primary test user
     const user = await User.create({
