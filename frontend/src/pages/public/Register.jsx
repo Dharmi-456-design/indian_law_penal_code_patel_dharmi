@@ -69,7 +69,9 @@ const Register = () => {
         
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-8">
-            <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '26px', fontVariationSettings: "'FILL' 1, 'wght' 500" }}>gavel</span>
+            <Link to="/" className="hover:opacity-80 transition-opacity" aria-label="Go to Home">
+              <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '26px', fontVariationSettings: "'FILL' 1, 'wght' 500" }}>gavel</span>
+            </Link>
             <button onClick={() => setDark(!dark)} id="theme-toggle-register" className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors" aria-label="Toggle theme">
               <span className="material-symbols-outlined text-white" style={{ fontSize: '18px' }}>{dark ? 'light_mode' : 'dark_mode'}</span>
             </button>
@@ -95,8 +97,16 @@ const Register = () => {
       </div>
 
       {/* ── RIGHT FORM PANEL ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <div className="md:hidden w-full max-w-[420px] flex justify-end mb-4">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative">
+        
+        {/* Back Button */}
+        <Link to="/" className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-1.5 text-sm font-medium text-[#6b7280] dark:text-[#9ca3af] hover:text-[#111827] dark:hover:text-white transition-colors">
+          <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>arrow_back</span>
+          Back
+        </Link>
+
+        {/* Mobile theme toggle */}
+        <div className="md:hidden w-full max-w-[420px] flex justify-end mb-4 absolute top-6 right-6">
           <button onClick={() => setDark(!dark)} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors">
             <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>{dark ? 'light_mode' : 'dark_mode'}</span>
           </button>
