@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('lex-theme');
     if (saved) return saved === 'dark';
@@ -61,10 +63,12 @@ const LandingPage = () => {
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <button className="hidden sm:block text-sm font-medium text-[#374151] dark:text-[#d1d5db] hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors">
+            <button onClick={() => navigate('/login')}
+              className="hidden sm:block text-sm font-medium text-[#374151] dark:text-[#d1d5db] hover:text-[#c9a84c] dark:hover:text-[#e6c364] transition-colors">
               Login
             </button>
-            <button className="text-sm font-semibold px-5 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90 active:scale-95"
+            <button onClick={() => navigate('/register')}
+              className="text-sm font-semibold px-5 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#c9a84c', boxShadow: '0 1px 3px rgba(201,168,76,0.3)' }}>
               Register
             </button>
@@ -249,12 +253,12 @@ const LandingPage = () => {
               authority in every case.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button id="cta-register"
+              <button id="cta-register" onClick={() => navigate('/register')}
                 className="w-full sm:w-auto px-8 py-4 text-white font-bold text-[15px] rounded-xl hover:opacity-90 active:scale-95 transition-all"
                 style={{ backgroundColor: '#c9a84c', boxShadow: '0 4px 14px rgba(201,168,76,0.25)' }}>
                 Register for Free
               </button>
-              <button id="cta-demo"
+              <button id="cta-demo" onClick={() => navigate('/login')}
                 className="w-full sm:w-auto px-8 py-4 font-bold text-[15px] rounded-xl border-2 border-[#d1d5db] dark:border-[#40484a] text-[#111827] dark:text-white hover:bg-[#f9fafb] dark:hover:bg-[#282a2b] transition-colors">
                 Request Demo
               </button>
