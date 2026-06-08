@@ -57,11 +57,11 @@ const ScalesOfJustice = ({ dark }) => (
         <stop offset="0%" stopColor="#c9a84c" />
         <stop offset="100%" stopColor="#f0d074" />
       </linearGradient>
-      <linearGradient id="panFill" x1="0" y1="0" x2="0" y2="1" gradientUnits="userSpaceOnUse" x1="18" y1="130" x2="18" y2="148">
+      <linearGradient id="panFill" gradientUnits="userSpaceOnUse" x1="18" y1="130" x2="18" y2="148">
         <stop offset="0%" stopColor="#c9a84c" stopOpacity={dark ? "0.25" : "0.35"} />
         <stop offset="100%" stopColor="#c9a84c" stopOpacity={dark ? "0.05" : "0.1"} />
       </linearGradient>
-      <linearGradient id="panFill2" x1="0" y1="0" x2="0" y2="1" gradientUnits="userSpaceOnUse" x1="134" y1="120" x2="134" y2="138">
+      <linearGradient id="panFill2" gradientUnits="userSpaceOnUse" x1="134" y1="120" x2="134" y2="138">
         <stop offset="0%" stopColor={dark ? "#a78bfa" : "#7c3aed"} stopOpacity="0.25" />
         <stop offset="100%" stopColor={dark ? "#a78bfa" : "#7c3aed"} stopOpacity="0.05" />
       </linearGradient>
