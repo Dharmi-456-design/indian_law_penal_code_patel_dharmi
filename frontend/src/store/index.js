@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
+import sectionsReducer from './slices/sectionsSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     ui: uiReducer,
-    // Other slices like sections, acts, bookmarks will be added here later
+    sections: sectionsReducer,
   },
 });
 
 export default store;
+
