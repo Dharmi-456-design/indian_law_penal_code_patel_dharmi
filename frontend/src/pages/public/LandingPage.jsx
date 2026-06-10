@@ -394,23 +394,7 @@ const LandingPage = () => {
             HERO SECTION
            ════════════════════════════════════════════════════════ */}
         <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
-          {/* Morphing background blobs */}
-          <div
-            className="absolute w-[500px] h-[500px] opacity-[0.07] dark:opacity-[0.12]"
-            style={{
-              top: '5%', left: '10%',
-              background: 'linear-gradient(135deg, #c9a84c, #f0d074)',
-              animation: 'morphBlob 15s ease-in-out infinite, heroGlow 6s ease-in-out infinite',
-            }}
-          />
-          <div
-            className="absolute w-[400px] h-[400px] opacity-[0.05] dark:opacity-[0.10]"
-            style={{
-              bottom: '10%', right: '5%',
-              background: 'linear-gradient(135deg, #7c4dff, #a78bfa)',
-              animation: 'morphBlob 18s 3s ease-in-out infinite, heroGlow 8s 2s ease-in-out infinite',
-            }}
-          />
+
 
           {/* Grid pattern overlay */}
           <div

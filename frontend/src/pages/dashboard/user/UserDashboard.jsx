@@ -42,7 +42,7 @@ const RANDOM_SECTIONS = [
     actCode: 'IPC',
     sectionNumber: '378',
     sectionTitle: 'Theft',
-    sectionDesc: 'Whoever, intending to take dishonestly any moveable property out of the possession of any person without that person\'s consent, moves that property in order to such taking, is said to commit theft.',
+    sectionDesc: "Whoever, intending to take dishonestly any moveable property out of the possession of any person without that person's consent, moves that property in order to such taking, is said to commit theft.",
     citation: 'IPC Sec. 378 (1860)'
   },
   {
@@ -72,50 +72,38 @@ const DEFAULT_NOTES = [
   { _id: 'n2', sectionRef: 'NIA Section 138', noteText: 'Check notice dispatch dates - strict 30-day window from receipt of memo is mandatory.', date: 'Jun 6, 2026' }
 ];
 
-/* ─── Animated Metric Counter Component ───────────────────────────── */
+/* ─── Animated Metric Counter Component ─────────────────────────────── */
 const AnimatedCounter = ({ value, duration = 1200 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    // Parse numeric parts (handles string structures like "2,201" or "8+")
     const match = String(value).match(/\d+/g);
-    if (!match) {
-      setCount(value);
-      return;
-    }
+    if (!match) { setCount(value); return; }
     const target = parseInt(match.join(''), 10);
-    const start = 0;
-    const end = target;
-    if (start === end) {
-      setCount(value);
-      return;
-    }
+    if (target === 0) { setCount(value); return; }
 
     let startTime = null;
     const animate = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      // Easing: easeOutQuad
       const easeProgress = progress * (2 - progress);
-      const current = Math.floor(easeProgress * (end - start) + start);
-      
+      const current = Math.floor(easeProgress * target);
+
       if (String(value).includes(',')) {
-        setCount(current.toLocaleString('en-IN') + (String(value).replace(/[\d,]/g, '')));
+        setCount(current.toLocaleString('en-IN') + String(value).replace(/[\d,]/g, ''));
       } else {
-        setCount(current + (String(value).replace(/[\d]/g, '')));
+        setCount(current + String(value).replace(/\d/g, ''));
       }
 
-      if (progress < 1) {
-        window.requestAnimationFrame(animate);
-      }
+      if (progress < 1) window.requestAnimationFrame(animate);
     };
-
     window.requestAnimationFrame(animate);
   }, [value, duration]);
 
   return <span className="animate-counter-up">{count}</span>;
 };
 
+/* ─── Main Component ─────────────────────────────────────────────────── */
 export default function UserDashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -123,233 +111,142 @@ export default function UserDashboard() {
   const { theme } = useSelector((state) => state.ui);
   const isDark = theme === 'dark';
 
-  // State variables
   const [acts, setActs] = useState(FALLBACK_ACTS);
   const [bookmarks, setBookmarks] = useState(DEFAULT_BOOKMARKS);
   const [notes, setNotes] = useState(DEFAULT_NOTES);
   const [spotlight, setSpotlight] = useState(RANDOM_SECTIONS[0]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [newNoteRef, setNewNoteRef] = useState('');
   const [newNoteText, setNewNoteText] = useState('');
-  const [loading, setLoading] = useState({ acts: false, bookmarks: false, notes: false });
 
-  // Fetch current user if token exists but user is null (on refresh)
+  // Fetch current user on refresh
   useEffect(() => {
     const token = localStorage.getItem('lex_token');
     if (token && !user) {
       api.get('/auth/me')
-        .then((res) => {
-          if (res.data && res.data.data) {
-            dispatch(setUser(res.data.data));
-          }
-        })
+        .then((res) => { if (res.data?.data) dispatch(setUser(res.data.data)); })
         .catch((err) => console.error('Failed to load user profile:', err));
     }
   }, [user, dispatch]);
 
-  // Load dashboard data from APIs
+  // Load dashboard data
   useEffect(() => {
-    // 1. Acts
-    setLoading(prev => ({ ...prev, acts: true }));
     api.get('/acts')
       .then((res) => {
-        if (res.data && res.data.data && res.data.data.length > 0) {
-          // Merge custom starred field
-          const merged = res.data.data.map(a => ({
-            ...a,
-            isStarred: ['IPC', 'CrPC', 'CPC'].includes(a.actCode)
-          }));
-          setActs(merged);
+        if (res.data?.data?.length > 0) {
+          setActs(res.data.data.map(a => ({ ...a, isStarred: ['IPC', 'CrPC', 'CPC'].includes(a.actCode) })));
         }
       })
-      .catch((err) => {
-        console.warn('Backend /acts endpoint failed, using local mock data:', err);
-      })
-      .finally(() => setLoading(prev => ({ ...prev, acts: false })));
+      .catch(() => { });
 
-    // 2. Bookmarks
-    setLoading(prev => ({ ...prev, bookmarks: true }));
     api.get('/bookmarks')
-      .then((res) => {
-        if (res.data && res.data.data) {
-          setBookmarks(res.data.data);
-        }
-      })
-      .catch((err) => {
-        console.warn('Backend /bookmarks endpoint failed, using local mock data:', err);
-      })
-      .finally(() => setLoading(prev => ({ ...prev, bookmarks: false })));
+      .then((res) => { if (res.data?.data) setBookmarks(res.data.data); })
+      .catch(() => { });
 
-    // 3. Notes
-    setLoading(prev => ({ ...prev, notes: true }));
     api.get('/notes')
       .then((res) => {
-        if (res.data && res.data.data) {
-          // Normalize API notes if they look different
-          const normalized = res.data.data.map(n => ({
+        if (res.data?.data) {
+          setNotes(res.data.data.map(n => ({
             _id: n._id,
-            sectionRef: n.sectionId?.sectionNumber ? `${n.sectionId.actCode} Section ${n.sectionId.sectionNumber}` : n.sectionRef || 'Legal Note',
+            sectionRef: n.sectionId?.sectionNumber
+              ? `${n.sectionId.actCode} Section ${n.sectionId.sectionNumber}`
+              : n.sectionRef || 'Legal Note',
             noteText: n.noteText,
-            date: new Date(n.updatedAt || n.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-          }));
-          setNotes(normalized);
+            date: new Date(n.updatedAt || n.createdAt || Date.now())
+              .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          })));
         }
       })
-      .catch((err) => {
-        console.warn('Backend /notes endpoint failed, using local mock data:', err);
-      })
-      .finally(() => setLoading(prev => ({ ...prev, notes: false })));
+      .catch(() => { });
   }, []);
 
-  // Set initial random spotlight
-  useEffect(() => {
-    rollSpotlight();
-  }, []);
+  // Initial random spotlight
+  useEffect(() => { rollSpotlight(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle Search Input Change
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.trim().length > 1) {
-      // Perform client-side filter first for responsiveness
-      const searchTerms = query.toLowerCase().split(' ');
-      const matched = [];
-
-      // Search within fallback/mock acts and sections
-      RANDOM_SECTIONS.forEach(sec => {
-        const matchesQuery = searchTerms.every(term => 
-          sec.sectionNumber.toLowerCase().includes(term) ||
-          sec.sectionTitle.toLowerCase().includes(term) ||
-          sec.sectionDesc.toLowerCase().includes(term) ||
-          sec.actCode.toLowerCase().includes(term)
-        );
-        if (matchesQuery) matched.push({ ...sec, type: 'section' });
-      });
-
-      acts.forEach(act => {
-        const matchesQuery = searchTerms.every(term => 
-          act.actName.toLowerCase().includes(term) ||
-          act.actCode.toLowerCase().includes(term)
-        );
-        if (matchesQuery) matched.push({ ...act, type: 'act' });
-      });
-
-      setSearchResults(matched);
-      setShowSearchDropdown(true);
-    } else {
-      setSearchResults([]);
-      setShowSearchDropdown(false);
-    }
-  };
-
-  // Roll a new spotlight section
   const rollSpotlight = () => {
-    const currentIndex = RANDOM_SECTIONS.indexOf(spotlight);
-    let nextIndex = Math.floor(Math.random() * RANDOM_SECTIONS.length);
-    if (nextIndex === currentIndex) {
-      nextIndex = (nextIndex + 1) % RANDOM_SECTIONS.length;
-    }
-    setSpotlight(RANDOM_SECTIONS[nextIndex]);
+    setSpotlight(prev => {
+      const currentIndex = RANDOM_SECTIONS.indexOf(prev);
+      let nextIndex = Math.floor(Math.random() * RANDOM_SECTIONS.length);
+      if (nextIndex === currentIndex) nextIndex = (nextIndex + 1) % RANDOM_SECTIONS.length;
+      return RANDOM_SECTIONS[nextIndex];
+    });
   };
 
-  // Add a new note (either backend-linked or client-only fallback)
   const handleAddNote = (e) => {
     e.preventDefault();
     if (!newNoteRef.trim() || !newNoteText.trim()) return;
 
     api.post('/notes', { sectionRef: newNoteRef, noteText: newNoteText })
       .then((res) => {
-        const createdNote = res.data?.data;
-        if (createdNote) {
-          setNotes(prev => [
-            {
-              _id: createdNote._id,
-              sectionRef: newNoteRef,
-              noteText: createdNote.noteText,
-              date: 'Just now'
-            },
-            ...prev
-          ]);
+        const created = res.data?.data;
+        if (created) {
+          setNotes(prev => [{ _id: created._id, sectionRef: newNoteRef, noteText: created.noteText, date: 'Just now' }, ...prev]);
         }
       })
-      .catch((err) => {
-        // Fallback to local state update
-        console.warn('Failed to save note to backend, updating locally:', err);
-        const newNote = {
+      .catch(() => {
+        setNotes(prev => [{
           _id: `note-${Date.now()}`,
           sectionRef: newNoteRef,
           noteText: newNoteText,
           date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-        };
-        setNotes(prev => [newNote, ...prev]);
+        }, ...prev]);
       })
-      .finally(() => {
-        setNewNoteRef('');
-        setNewNoteText('');
-      });
+      .finally(() => { setNewNoteRef(''); setNewNoteText(''); });
   };
 
-  // Delete a note
   const handleDeleteNote = (noteId) => {
     api.delete(`/notes/${noteId}`)
-      .then(() => {
-        setNotes(prev => prev.filter(n => n._id !== noteId));
-      })
-      .catch((err) => {
-        console.warn('Failed to delete note from backend, updating locally:', err);
-        setNotes(prev => prev.filter(n => n._id !== noteId));
-      });
+      .catch(() => { })
+      .finally(() => setNotes(prev => prev.filter(n => n._id !== noteId)));
   };
 
   const actDelays = ['delay-200', 'delay-250', 'delay-300', 'delay-350', 'delay-400', 'delay-450', 'delay-500', 'delay-600'];
 
   return (
-    <div className="relative min-h-screen space-y-6">
-      
-      {/* ── BACKGROUND DRIFTING ORBS ── */}
-      <div className="absolute top-[10%] left-[-8%] w-[380px] h-[380px] rounded-full pointer-events-none mix-blend-screen opacity-15 dark:opacity-30"
-        style={{ background: 'radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 75%)', animation: 'orb 20s ease-in-out infinite' }} />
-      <div className="absolute top-[40%] right-[-8%] w-[450px] h-[450px] rounded-full pointer-events-none mix-blend-screen opacity-15 dark:opacity-25"
-        style={{ background: 'radial-gradient(circle, rgba(124,77,255,0.1) 0%, transparent 75%)', animation: 'orb 25s ease-in-out infinite', animationDelay: '2s' }} />
-      <div className="absolute bottom-[5%] left-[20%] w-[300px] h-[300px] rounded-full pointer-events-none mix-blend-screen opacity-8 dark:opacity-15"
-        style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 75%)', animation: 'orb 18s ease-in-out infinite', animationDelay: '4s' }} />
+    <div className="relative min-h-screen space-y-12 pb-20 font-sans selection:bg-[#c9a84c]/30">
 
-      <div className="relative z-10 space-y-6">
+      {/* ── PREMIUM BACKGROUND EFFECTS ── */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full mix-blend-screen opacity-20 dark:opacity-30 animate-orb"
+          style={{ background: 'radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%)' }} />
+        <div className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] rounded-full mix-blend-screen opacity-20 dark:opacity-20 animate-orb delay-300"
+          style={{ background: 'radial-gradient(circle, rgba(124,77,255,0.12) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-[-10%] left-[20%] w-[400px] h-[400px] rounded-full mix-blend-screen opacity-15 dark:opacity-20 animate-orb delay-700"
+          style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#f8f9fa]/50 to-[#f3f4f6] dark:from-transparent dark:via-[#0c0f10]/80 dark:to-[#050505] -z-10" />
+      </div>
+
+      <div className="relative z-10 space-y-12">
 
         {/* ── TOP HEADER / GREETING ROW ── */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#16121f] p-6 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 animate-fade-in-down">
-          
-          {/* Subtle decorative background gradients for dark mode (Luminous Purple theme) */}
-          <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-[0.03] dark:opacity-[0.06] bg-[#c9a84c] dark:bg-[#7c4dff] blur-3xl pointer-events-none -mr-20 -mt-20"></div>
-          
-          <div className="relative z-10 space-y-1">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h1 className="text-2xl lg:text-3xl font-extrabold text-[#111827] dark:text-[#e1e3e4] tracking-tight">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 dark:bg-[#130f1c]/80 backdrop-blur-2xl p-10 rounded-2xl border border-white/40 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-500 animate-fade-in-down overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#c9a84c]/5 to-transparent dark:from-[#7c4dff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+          <div className="relative z-10 space-y-3">
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              <h1 className="text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white tracking-tight">
                 Welcome Back, <span className="gradient-text-gold">{user?.name ? `Advocate ${user.name}` : 'Counselor'}</span>
               </h1>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-200 dark:border-green-800/30 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 text-xs font-semibold">
-                <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                <span>Verified Legal Intelligence Hub</span>
+              <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
+                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                <span>Verified Legal Hub</span>
               </div>
             </div>
-            <p className="text-sm lg:text-base text-[#6b7280] dark:text-[#cac3d8] leading-relaxed">
+            <p className="text-base text-gray-500 dark:text-gray-400 font-medium">
               The modern suite for deep legal research and efficient data management. Trusted by professionals.
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium">
-              Current Session Date: {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-            </p>
+            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 font-semibold mt-2">
+              <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+            </div>
           </div>
 
-          {/* Theme Toggle Button within the Dashboard */}
+          {/* Theme Toggle Button */}
           <div className="relative z-10 shrink-0">
             <button
               onClick={() => dispatch(toggleTheme())}
-              className="w-full flex items-center justify-center gap-2.5 px-4.5 py-2.5 rounded-lg border border-[#d1d5db] dark:border-white/10 bg-white dark:bg-[#1e1633] text-sm font-semibold transition-all hover:bg-gray-50 dark:hover:bg-[#251b45] shadow-sm text-[#111827] dark:text-white"
+              className="group/btn flex items-center justify-center gap-3 px-6 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#1a1528]/50 backdrop-blur-xl text-sm font-semibold shadow-sm hover:shadow-md hover:bg-white dark:hover:bg-[#251b45] transition-all duration-300 text-gray-800 dark:text-white"
             >
-              <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontSize: '20px' }}>
+              <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] group-hover/btn:rotate-12 transition-transform duration-300" style={{ fontSize: '22px' }}>
                 {isDark ? 'light_mode' : 'dark_mode'}
               </span>
               <span>Switch to {isDark ? 'Light' : 'Dark'} Mode</span>
@@ -357,183 +254,84 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        {/* ── SEARCH BAR WIDGET ── */}
-        <div className="relative bg-white dark:bg-[#16121f] p-4.5 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm transition-all duration-300 animate-fade-in-down delay-75">
-          <div className="flex items-center w-full bg-[#f9fafb] dark:bg-[#0c0f10] border border-[#d1d5db] dark:border-white/10 rounded-lg px-4 py-3 focus-within:border-[#c9a84c] dark:focus-within:border-[#7c4dff] transition-all">
-            <span className="material-symbols-outlined text-gray-400 dark:text-gray-500 mr-3" style={{ fontSize: '22px' }}>search</span>
-            <input
-              type="text"
-              placeholder="Search Acts, Sections, or citations (e.g. IPC 302, Cheque bounce...)"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
-              onFocus={() => searchQuery.trim().length > 1 && setShowSearchDropdown(true)}
-              className="bg-transparent border-none outline-none w-full text-base text-[#111827] dark:text-[#e1e3e4] placeholder-gray-400 dark:placeholder-gray-600"
-            />
-          </div>
-
-          {/* Search Results Dropdown Overlay */}
-          {showSearchDropdown && searchResults.length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-[#1e1633] border border-[#e5e7eb] dark:border-white/15 rounded-xl shadow-xl z-50 overflow-hidden max-h-80 overflow-y-auto animate-scale-in">
-              <div className="px-4 py-2 bg-gray-50 dark:bg-[#16121f] border-b border-[#e5e7eb] dark:border-white/10 text-xs font-bold text-gray-400 dark:text-[#cac3d8] uppercase tracking-wider">
-                Matching Legal References ({searchResults.length})
-              </div>
-              {searchResults.map((result, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    if (result.type === 'act') {
-                      navigate('/dashboard/browse');
-                    } else {
-                      setSpotlight(result);
-                    }
-                    setShowSearchDropdown(false);
-                    setSearchQuery('');
-                  }}
-                  className="px-5 py-3 hover:bg-gray-50 dark:hover:bg-[#251b45] cursor-pointer flex items-start gap-3 border-b border-[#e5e7eb]/60 dark:border-white/5 last:border-b-0"
-                >
-                  <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] mt-0.5 shrink-0" style={{ fontSize: '18px' }}>
-                    {result.type === 'act' ? 'gavel' : 'article'}
-                  </span>
-                  <div>
-                    <div className="text-sm font-bold text-[#111827] dark:text-white flex items-center gap-2">
-                      {result.type === 'act' ? (
-                        <>
-                          <span>{result.actName} ({result.actYear})</span>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-[#d7e0f4] dark:bg-[#785d00] text-[#5a6374] dark:text-[#fdd977] rounded">ACT</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>{result.actCode} Section {result.sectionNumber}</span>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">SEC</span>
-                        </>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
-                      {result.type === 'act' ? result.description : `${result.sectionTitle} — ${result.sectionDesc}`}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
         {/* ── KEY METRICS / STATS GRID ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          {/* Metric 1 */}
-          <div className="bg-white dark:bg-[#16121f] p-5 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 animate-slide-card delay-100 card-hover">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[#c9a84c]/5 rounded-bl-full pointer-events-none" />
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Covered Statutes</span>
-              <div className="w-9 h-9 rounded-lg bg-[#fcfaf7] dark:bg-[#251b45] border border-[#e5e7eb] dark:border-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontSize: '20px' }}>gavel</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mt-8">
+          {[
+            { label: 'Covered Statutes', value: acts.length, suffix: 'Acts', desc: 'Standardized codes of India', icon: 'gavel', color: 'text-[#c9a84c]', bg: 'bg-[#c9a84c]', glow: 'shadow-[#c9a84c]/20' },
+            { label: 'Unified Library', value: '2,201', suffix: 'Sections', desc: 'Full text indices loaded', icon: 'menu_book', color: 'text-purple-500', bg: 'bg-purple-500', glow: 'shadow-purple-500/20' },
+            { label: 'Saved Bookmarks', value: bookmarks.length, suffix: 'Bookmarks', desc: 'Saved for active litigation', icon: 'bookmark', color: 'text-amber-500', bg: 'bg-amber-500', glow: 'shadow-amber-500/20' },
+            { label: 'Case Annotations', value: notes.length, suffix: 'Active Notes', desc: 'Personal statutory remarks', icon: 'edit_note', color: 'text-blue-500', bg: 'bg-blue-500', glow: 'shadow-blue-500/20' }
+          ].map((metric, i) => (
+            <div key={i} className={`bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-2xl border border-gray-200/50 dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-500 animate-slide-card delay-${(i + 1) * 100} card-hover group/metric`}>
+              <div className={`absolute top-0 right-0 w-32 h-32 ${metric.bg} opacity-[0.03] dark:opacity-[0.05] rounded-bl-full pointer-events-none group-hover/metric:scale-110 transition-transform duration-500`} />
+              <div className="flex items-center justify-between mb-8">
+                <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{metric.label}</span>
+                <div className={`w-14 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-center shadow-lg ${metric.glow} group-hover/metric:-translate-y-1 transition-transform duration-300`}>
+                  <span className={`material-symbols-outlined ${metric.color}`} style={{ fontSize: '28px' }}>{metric.icon}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-4xl font-semibold text-gray-900 dark:text-white tracking-tight">
+                  <AnimatedCounter value={metric.value} /> <span className="text-xl font-semibold text-gray-400">{metric.suffix}</span>
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{metric.desc}</p>
               </div>
             </div>
-            <p className="text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight">
-              <AnimatedCounter value={acts.length} /> Acts
-            </p>
-            <p className="text-xs text-[#6b7280] dark:text-[#cac3d8] mt-1.5 font-medium">Standardized codes of India</p>
-          </div>
-
-          {/* Metric 2 */}
-          <div className="bg-white dark:bg-[#16121f] p-5 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 animate-slide-card delay-150 card-hover">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full pointer-events-none" />
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Unified Library</span>
-              <div className="w-9 h-9 rounded-lg bg-[#fcfaf7] dark:bg-[#251b45] border border-[#e5e7eb] dark:border-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-purple-600 dark:text-[#cdbdff]" style={{ fontSize: '20px' }}>menu_book</span>
-              </div>
-            </div>
-            <p className="text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight">
-              <AnimatedCounter value="2,201" /> Sections
-            </p>
-            <p className="text-xs text-[#6b7280] dark:text-[#cac3d8] mt-1.5 font-medium">Full text indices loaded</p>
-          </div>
-
-          {/* Metric 3 */}
-          <div className="bg-white dark:bg-[#16121f] p-5 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 animate-slide-card delay-200 card-hover">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-bl-full pointer-events-none" />
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Saved Bookmarks</span>
-              <div className="w-9 h-9 rounded-lg bg-[#fcfaf7] dark:bg-[#251b45] border border-[#e5e7eb] dark:border-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>bookmark</span>
-              </div>
-            </div>
-            <p className="text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight">
-              <AnimatedCounter value={bookmarks.length} /> Bookmarks
-            </p>
-            <p className="text-xs text-[#6b7280] dark:text-[#cac3d8] mt-1.5 font-medium">Saved for active litigation</p>
-          </div>
-
-          {/* Metric 4 */}
-          <div className="bg-white dark:bg-[#16121f] p-5 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 animate-slide-card delay-250 card-hover">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full pointer-events-none" />
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Case Annotations</span>
-              <div className="w-9 h-9 rounded-lg bg-[#fcfaf7] dark:bg-[#251b45] border border-[#e5e7eb] dark:border-white/10 flex items-center justify-center">
-                <span className="material-symbols-outlined text-blue-600 dark:text-blue-400" style={{ fontSize: '20px' }}>edit_note</span>
-              </div>
-            </div>
-            <p className="text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight">
-              <AnimatedCounter value={notes.length} /> Active Notes
-            </p>
-            <p className="text-xs text-[#6b7280] dark:text-[#cac3d8] mt-1.5 font-medium">Personal statutory remarks</p>
-          </div>
+          ))}
         </div>
 
         {/* ── ACT SELECTOR SECTION ── */}
-        <div className="space-y-4 animate-fade-in-up delay-150">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#111827] dark:text-[#e1e3e4] tracking-tight">Browse Legal Codes</h2>
-            <span className="text-xs font-mono font-bold text-[#c9a84c] dark:text-[#e6c364] tracking-wider uppercase">Click to browse acts</span>
+        <div className="space-y-8 animate-fade-in-up delay-150 pt-8 mt-8">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+              <span className="material-symbols-outlined text-[#c9a84c] text-3xl">local_library</span>
+              Browse Legal Codes
+            </h2>
+            <span className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-4 py-2 rounded-full">Select to explore</span>
           </div>
 
-          {/* Grid of 8 acts */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
             {acts.map((act, idx) => {
               const delayClass = actDelays[idx % actDelays.length];
               return (
                 <div
                   key={act.actCode}
                   onClick={() => navigate(`/dashboard/browse?actCode=${act.actCode}`)}
-                  className={`group cursor-pointer relative bg-white dark:bg-[#16121f] p-6 rounded-xl border shadow-sm transition-all duration-200 flex flex-col justify-between overflow-hidden animate-fade-in-up card-hover ${delayClass} ${
-                    act.isStarred 
-                      ? 'border-[#c9a84c]/50 dark:border-[#e6c364]/40 animate-border-pulse' 
-                      : 'border-[#e5e7eb] dark:border-white/10 hover:border-[#c9a84c] dark:hover:border-[#7c4dff]'
-                  }`}
-                  style={{ minHeight: '185px' }}
+                  className={`group/act cursor-pointer relative bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-8 rounded-2xl border shadow-sm flex flex-col justify-between overflow-hidden animate-fade-in-up card-hover ${delayClass} ${act.isStarred
+                      ? 'border-[#c9a84c]/50 dark:border-[#c9a84c]/30 animate-border-pulse'
+                      : 'border-gray-200/50 dark:border-white/10 hover:border-[#c9a84c]/50 dark:hover:border-[#7c4dff]/50'
+                    }`}
+                  style={{ minHeight: '220px' }}
                 >
-                  {/* Starred Gold top border accent */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover/act:opacity-100 transition-opacity duration-500"></div>
                   {act.isStarred && (
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#c9a84c] dark:bg-[#e6c364]" />
+                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#c9a84c] to-[#f0d074]" />
                   )}
 
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 bg-gray-100 dark:bg-[#1e1633] text-gray-600 dark:text-[#cdbdff] rounded border border-gray-200/50 dark:border-white/5 tracking-wider">
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between gap-2 mb-5">
+                      <span className="text-sm font-semibold px-4 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg tracking-widest shadow-md">
                         {act.actCode}
                       </span>
-                      <span className="text-xs font-semibold text-[#c9a84c] dark:text-[#e6c364]">
+                      <span className="text-sm font-semibold text-gray-500 dark:text-[#e6c364] bg-gray-100 dark:bg-[#c9a84c]/10 px-3 py-1.5 rounded-md">
                         {act.actYear}
                       </span>
                     </div>
-                    <h3 className="text-[16px] font-bold text-[#111827] dark:text-white group-hover:text-[#c9a84c] dark:group-hover:text-[#cdbdff] transition-colors leading-tight mb-2">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover/act:text-[#c9a84c] dark:group-hover/act:text-[#cdbdff] transition-colors leading-tight mb-3">
                       {act.actName}
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed font-medium">
                       {act.description}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">
+                  <div className="relative z-10 mt-6 pt-5 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-md">
                       {act.totalSections} sections
                     </span>
-                    <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] text-[16px] group-hover:translate-x-1 transition-transform">
-                      arrow_forward
-                    </span>
+                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover/act:bg-[#c9a84c] group-hover/act:text-white dark:group-hover/act:bg-[#7c4dff] transition-all duration-300 transform group-hover/act:translate-x-1">
+                      <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </div>
                   </div>
                 </div>
               );
@@ -541,189 +339,203 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        {/* ── SPOTLIGHT & notes COLUMN GRID ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in-up delay-300">
-          
-          {/* Spotlight Card */}
-          <div className="lg:col-span-8 bg-white dark:bg-[#16121f] p-6 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300 flex flex-col justify-between card-hover" style={{ minHeight: '340px' }}>
-            {/* Accent Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/5 dark:bg-[#7c4dff]/5 rounded-bl-full pointer-events-none" />
-            
-            <div>
-              <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-3.5 mb-5">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
-                  <span className="text-sm font-bold text-[#111827] dark:text-white uppercase tracking-wider">Statutory Spotlight</span>
+        {/* ── SPOTLIGHT & NOTES SECTION ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 animate-fade-in-up delay-300 pt-8 mt-8">
+
+          <div className="lg:col-span-8 bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg relative overflow-hidden transition-all duration-500 flex flex-col justify-between group/spotlight">
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-500/10 dark:bg-[#7c4dff]/10 rounded-full blur-3xl pointer-events-none group-hover/spotlight:bg-purple-500/20 transition-colors duration-700" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] animate-pulse text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
+                  </div>
+                  <span className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Statutory Spotlight</span>
                 </div>
                 <button
                   onClick={rollSpotlight}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-[#251b45] text-xs font-bold transition-all text-[#111827] dark:text-white"
+                  className="group/roll flex items-center gap-3 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 text-sm font-semibold transition-all text-gray-900 dark:text-white shadow-sm hover:shadow"
                 >
-                  <span className="material-symbols-outlined text-[14px]">autorenew</span>
+                  <span className="material-symbols-outlined text-[20px] group-hover/roll:rotate-180 transition-transform duration-500">autorenew</span>
                   <span>Roll Another</span>
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded border border-purple-200/50 dark:border-purple-800/10">
-                    {spotlight.actCode} Section {spotlight.sectionNumber}
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg shadow-md uppercase tracking-wider">
+                    {spotlight.actCode} Sec {spotlight.sectionNumber}
                   </span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500 font-semibold">{spotlight.citation}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold bg-gray-100 dark:bg-white/5 px-4 py-2 rounded-lg border border-gray-200 dark:border-white/5">{spotlight.citation}</span>
                 </div>
-                <h3 className="text-lg lg:text-xl font-bold text-[#111827] dark:text-white leading-tight">
+                <h3 className="text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white leading-tight tracking-tight">
                   {spotlight.sectionTitle}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal bg-[#fcfaf7] dark:bg-[#0c0f10] p-4.5 rounded-lg border border-gray-200/50 dark:border-white/5 animate-shimmer">
-                  {spotlight.sectionDesc}
-                </p>
+                <div className="relative mt-6">
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#c9a84c] to-purple-500 rounded-full"></div>
+                  <p className="text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium bg-gradient-to-r from-gray-50 to-transparent dark:from-white/5 dark:to-transparent pl-8 pr-6 py-6 rounded-r-2xl">
+                    {spotlight.sectionDesc}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between gap-4">
-              <span className="text-xs font-semibold text-[#c9a84c] dark:text-[#e6c364] flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">menu_book</span>
-                Decoded & standardized legal text
+            <div className="relative z-10 mt-10 pt-6 border-t border-gray-200 dark:border-white/10 flex items-center justify-between gap-6">
+              <span className="text-base font-semibold text-[#c9a84c] flex items-center gap-3 bg-[#c9a84c]/10 px-4 py-2 rounded-lg">
+                <span className="material-symbols-outlined text-[20px]">verified_user</span>
+                Decoded Legal Text
               </span>
               <button
-                onClick={() => {
-                  setNewNoteRef(`${spotlight.actCode} Section ${spotlight.sectionNumber}`);
-                }}
-                className="text-xs font-bold px-4 py-2 rounded-lg bg-[#1a2332] dark:bg-[#7c4dff] text-white hover:opacity-90 transition-opacity"
+                onClick={() => setNewNoteRef(`${spotlight.actCode} Section ${spotlight.sectionNumber}`)}
+                className="text-base font-semibold px-8 py-4 rounded-xl bg-gray-900 dark:bg-[#7c4dff] text-white hover:bg-gray-800 dark:hover:bg-[#6538e6] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-3"
               >
-                Annotate This Section
+                <span className="material-symbols-outlined text-[20px]">edit_note</span>
+                Annotate Section
               </button>
             </div>
           </div>
 
-          {/* Note Taking Widget */}
-          <div className="lg:col-span-4 bg-white dark:bg-[#16121f] p-6 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm transition-all duration-300 flex flex-col justify-between card-hover">
+          <div className="lg:col-span-4 bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 border-b border-gray-100 dark:border-white/5 pb-3.5 mb-5">
-                <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
-                <span className="text-sm font-bold text-[#111827] dark:text-white uppercase tracking-wider">Quick Annotations</span>
+              <div className="flex items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-blue-500 dark:text-blue-400 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_document</span>
+                </div>
+                <span className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Quick Annotations</span>
               </div>
 
-              <form onSubmit={handleAddNote} className="space-y-4">
+              <form onSubmit={handleAddNote} className="space-y-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Section Reference</label>
+                  <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Section Reference</label>
                   <input
                     type="text"
                     placeholder="e.g. IPC Section 302"
                     value={newNoteRef}
                     onChange={(e) => setNewNoteRef(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#d1d5db] dark:border-white/10 bg-[#fdfcfb] dark:bg-[#0c0f10] text-sm text-[#111827] dark:text-[#e1e3e4] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#c9a84c] dark:focus:ring-[#7c4dff]"
+                    className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Personal Remarks</label>
+                  <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Personal Remarks</label>
                   <textarea
-                    placeholder="Annotate facts, case files, or research deadlines..."
+                    placeholder="Annotate facts, case files, or deadlines..."
                     value={newNoteText}
                     onChange={(e) => setNewNoteText(e.target.value)}
-                    rows="3"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#d1d5db] dark:border-white/10 bg-[#fdfcfb] dark:bg-[#0c0f10] text-sm text-[#111827] dark:text-[#e1e3e4] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#c9a84c] dark:focus:ring-[#7c4dff] resize-none"
+                    rows="4"
+                    className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm resize-none"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-lg bg-[#c9a84c] dark:bg-[#7c4dff] text-white dark:text-white font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
-                  style={{ boxShadow: isDark ? '0 2px 10px rgba(124,77,255,0.2)' : '0 2px 8px rgba(201,168,76,0.2)' }}
+                  className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base uppercase tracking-widest shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 mt-4"
                 >
+                  <span className="material-symbols-outlined text-[20px]">save</span>
                   Save Annotation
                 </button>
               </form>
             </div>
 
-            <div className="text-[11px] text-gray-400 dark:text-gray-500 text-center mt-4 font-medium leading-tight">
-              Annotations remain private and secured under client-attorney confidentiality.
+            <div className="mt-8 p-5 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 flex items-start gap-4">
+              <span className="material-symbols-outlined text-green-600 dark:text-green-400 mt-1">lock</span>
+              <p className="text-sm text-green-800 dark:text-green-300 font-semibold leading-relaxed">
+                Annotations are secured with end-to-end encryption under client-attorney privilege.
+              </p>
             </div>
           </div>
         </div>
 
         {/* ── NOTES & BOOKMARKS VISUAL LISTS ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up delay-350">
-          
-          {/* Bookmarks Section */}
-          <div className="bg-white dark:bg-[#16121f] p-6 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm transition-all duration-300 card-hover">
-            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-3.5 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontVariationSettings: "'FILL' 1" }}>bookmark</span>
-                <h3 className="text-[15px] font-bold text-[#111827] dark:text-white uppercase tracking-wider">Bookmarked Sections</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-fade-in-up delay-350 pt-8 mt-8">
+
+          <div className="bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-amber-500 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>bookmark</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Saved Bookmarks</h3>
               </div>
-              <Link to="/dashboard/bookmarks" className="text-xs font-bold text-[#c9a84c] dark:text-[#cdbdff] hover:underline">View All</Link>
+              <Link to="/dashboard/bookmarks" className="text-sm font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 bg-amber-50 dark:bg-amber-500/10 px-4 py-2 rounded-lg transition-colors">View All</Link>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-6">
               {bookmarks.map((bookmark) => (
                 <div
                   key={bookmark._id}
-                  className="p-4 rounded-lg bg-[#fcfaf7] dark:bg-[#0c0f10] border border-gray-200/50 dark:border-white/5 flex items-start justify-between gap-3 transition-colors hover:border-[#c9a84c]/30"
+                  className="group/bm p-6 rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/5 flex items-start justify-between gap-5 transition-all hover:shadow-md hover:border-amber-500/30 dark:hover:border-amber-500/30"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 bg-gray-200 dark:bg-[#1e1633] text-gray-700 dark:text-[#cdbdff] rounded">
-                        {bookmark.actCode} Section {bookmark.sectionNumber}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="text-sm font-semibold px-3 py-1.5 bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 rounded-md uppercase tracking-wider">
+                        {bookmark.actCode} Sec {bookmark.sectionNumber}
                       </span>
-                      <span className="text-xs font-semibold text-[#111827] dark:text-white">{bookmark.sectionTitle}</span>
+                      <span className="text-base font-semibold text-gray-900 dark:text-white">{bookmark.sectionTitle}</span>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 italic font-medium">
-                      "{bookmark.note || 'No notes added.'}"
+                    <p className="text-base text-gray-600 dark:text-gray-400 line-clamp-2 italic font-medium bg-gray-50 dark:bg-white/5 px-4 py-3 rounded-xl border border-gray-100 dark:border-white/5">
+                      &ldquo;{bookmark.note || 'No notes added.'}&rdquo;
                     </p>
                   </div>
                   <button
-                    onClick={() => {
-                      setBookmarks(prev => prev.filter(b => b._id !== bookmark._id));
-                    }}
-                    className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors shrink-0"
+                    onClick={() => setBookmarks(prev => prev.filter(b => b._id !== bookmark._id))}
+                    className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover/bm:opacity-100 transition-all hover:bg-red-500 hover:text-white shrink-0"
                     aria-label="Remove bookmark"
                   >
-                    <span className="material-symbols-outlined text-[18px]">bookmark_remove</span>
+                    <span className="material-symbols-outlined text-[20px]">delete_outline</span>
                   </button>
                 </div>
               ))}
               {bookmarks.length === 0 && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-6">No saved bookmarks yet.</p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-3">bookmark_border</span>
+                  <p className="text-base font-semibold text-gray-500 dark:text-gray-400">No saved bookmarks yet.</p>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Annotations/Notes Section */}
-          <div className="bg-white dark:bg-[#16121f] p-6 rounded-xl border border-[#e5e7eb] dark:border-white/10 shadow-sm transition-all duration-300 card-hover">
-            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-3.5 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364]" style={{ fontVariationSettings: "'FILL' 1" }}>edit_document</span>
-                <h3 className="text-[15px] font-bold text-[#111827] dark:text-white uppercase tracking-wider">Recent Annotations</h3>
+          <div className="bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-blue-500 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Recent Annotations</h3>
               </div>
-              <Link to="/dashboard/notes" className="text-xs font-bold text-[#c9a84c] dark:text-[#cdbdff] hover:underline">View All</Link>
+              <Link to="/dashboard/notes" className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 bg-blue-50 dark:bg-blue-500/10 px-4 py-2 rounded-lg transition-colors">View All</Link>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-6">
               {notes.map((note) => (
                 <div
                   key={note._id}
-                  className="p-4 rounded-lg bg-[#fcfaf7] dark:bg-[#0c0f10] border border-gray-200/50 dark:border-white/5 flex items-start justify-between gap-3 transition-colors hover:border-[#7c4dff]/20"
+                  className="group/note p-6 rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/5 flex items-start justify-between gap-5 transition-all hover:shadow-md hover:border-blue-500/30 dark:hover:border-blue-500/30"
                 >
-                  <div className="space-y-1 flex-1">
+                  <div className="space-y-3 flex-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#111827] dark:text-[#e1e3e4]">{note.sectionRef}</span>
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold">{note.date}</span>
+                      <span className="text-sm font-semibold px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-md uppercase tracking-wider">
+                        {note.sectionRef}
+                      </span>
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-black/30 px-3 py-1.5 rounded-md">{note.date}</span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-normal line-clamp-2">
+                    <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
                       {note.noteText}
                     </p>
                   </div>
                   <button
                     onClick={() => handleDeleteNote(note._id)}
-                    className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors shrink-0"
+                    className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover/note:opacity-100 transition-all hover:bg-red-500 hover:text-white shrink-0 mt-1"
                     aria-label="Delete annotation"
                   >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                    <span className="material-symbols-outlined text-[20px]">delete_outline</span>
                   </button>
                 </div>
               ))}
               {notes.length === 0 && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-6">No annotations recorded yet.</p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-3">speaker_notes_off</span>
+                  <p className="text-base font-semibold text-gray-500 dark:text-gray-400">No annotations recorded yet.</p>
+                </div>
               )}
             </div>
           </div>
