@@ -117,6 +117,14 @@ export default function UserDashboard() {
   const [spotlight, setSpotlight] = useState(RANDOM_SECTIONS[0]);
   const [newNoteRef, setNewNoteRef] = useState('');
   const [newNoteText, setNewNoteText] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleGlobalSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/dashboard/browse?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   // Fetch current user on refresh
   useEffect(() => {
@@ -202,348 +210,328 @@ export default function UserDashboard() {
   const actDelays = ['delay-200', 'delay-250', 'delay-300', 'delay-350', 'delay-400', 'delay-450', 'delay-500', 'delay-600'];
 
   return (
-    <div className="relative min-h-screen space-y-12 pb-20 font-sans selection:bg-[#c9a84c]/30">
-
-      {/* ── PREMIUM BACKGROUND EFFECTS ── */}
+    <div className="relative min-h-screen bg-white dark:bg-[#050505] text-gray-900 dark:text-[#e2e8f0] font-sans selection:bg-[#c9a84c]/30 pb-20 transition-colors duration-500">
+      
+      {/* ── PREMIUM SUBTLE BACKGROUND ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full mix-blend-screen opacity-20 dark:opacity-30 animate-orb"
-          style={{ background: 'radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%)' }} />
-        <div className="absolute top-[30%] right-[-10%] w-[600px] h-[600px] rounded-full mix-blend-screen opacity-20 dark:opacity-20 animate-orb delay-300"
-          style={{ background: 'radial-gradient(circle, rgba(124,77,255,0.12) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-[-10%] left-[20%] w-[400px] h-[400px] rounded-full mix-blend-screen opacity-15 dark:opacity-20 animate-orb delay-700"
-          style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)' }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#f8f9fa]/50 to-[#f3f4f6] dark:from-transparent dark:via-[#0c0f10]/80 dark:to-[#050505] -z-10" />
+        <div className="absolute top-0 left-1/4 w-[800px] h-[600px] bg-[#c9a84c]/[0.05] dark:bg-[#c9a84c]/[0.03] blur-[120px] rounded-full mix-blend-multiply dark:mix-blend-screen" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[500px] bg-[#7c4dff]/[0.05] dark:bg-[#7c4dff]/[0.03] blur-[120px] rounded-full mix-blend-multiply dark:mix-blend-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-50 dark:opacity-20" />
       </div>
 
-      <div className="relative z-10 space-y-12">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 space-y-10 pt-12">
 
-        {/* ── TOP HEADER / GREETING ROW ── */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 dark:bg-[#130f1c]/80 backdrop-blur-2xl p-10 rounded-2xl border border-white/40 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-500 animate-fade-in-down overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#c9a84c]/5 to-transparent dark:from-[#7c4dff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-
-          <div className="relative z-10 space-y-3">
-            <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white tracking-tight">
-                Welcome Back, <span className="gradient-text-gold">{user?.name ? `Advocate ${user.name}` : 'Counselor'}</span>
-              </h1>
-              <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
-                <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-                <span>Verified Legal Hub</span>
-              </div>
+        {/* ── HEADER ── */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-gray-200 dark:border-white/10">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-medium text-[#c9a84c] tracking-widest uppercase mb-2">
+              <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse"></span>
+              Secure Legal Environment
             </div>
-            <p className="text-base text-gray-500 dark:text-gray-400 font-medium">
-              The modern suite for deep legal research and efficient data management. Trusted by professionals.
+            <h1 className="text-4xl lg:text-5xl font-light tracking-tight text-gray-900 dark:text-white">
+              Welcome, <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#c9a84c] to-[#f0d074]">{user?.name ? user.name : 'Counselor'}</span>
+            </h1>
+            <p className="text-gray-500 dark:text-[#94a3b8] text-lg font-light max-w-2xl">
+              Your comprehensive suite for deep statutory research, annotations, and litigation preparation.
             </p>
-            <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 font-semibold mt-2">
-              <span className="material-symbols-outlined text-[14px]">calendar_today</span>
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-            </div>
+            
+            <form onSubmit={handleGlobalSearch} className="relative max-w-lg pt-2">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none pt-2">
+                <span className="material-symbols-outlined text-gray-400 dark:text-gray-500 text-[22px]">search</span>
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search statutes, acts, or sections..."
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#c9a84c] focus:ring-1 focus:ring-[#c9a84c] text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/30 outline-none transition-all shadow-sm text-base"
+              />
+              <button type="submit" className="absolute top-3.5 right-1.5 px-5 py-2 bg-[#c9a84c] hover:bg-[#b0903a] text-black font-semibold rounded-lg transition-colors flex items-center shadow-md text-sm">
+                Search
+              </button>
+            </form>
           </div>
-
-          {/* Theme Toggle Button */}
-          <div className="relative z-10 shrink-0">
+          
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden md:block mr-4">
+              <p className="text-sm font-medium text-gray-800 dark:text-[#e2e8f0]">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-[#64748b]">
+                {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </div>
             <button
               onClick={() => dispatch(toggleTheme())}
-              className="group/btn flex items-center justify-center gap-3 px-6 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#1a1528]/50 backdrop-blur-xl text-sm font-semibold shadow-sm hover:shadow-md hover:bg-white dark:hover:bg-[#251b45] transition-all duration-300 text-gray-800 dark:text-white"
+              className="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-[#c9a84c]/50 text-[#c9a84c] transition-all duration-300"
+              title="Toggle Theme"
             >
-              <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] group-hover/btn:rotate-12 transition-transform duration-300" style={{ fontSize: '22px' }}>
-                {isDark ? 'light_mode' : 'dark_mode'}
-              </span>
-              <span>Switch to {isDark ? 'Light' : 'Dark'} Mode</span>
+              <span className="material-symbols-outlined">{isDark ? 'light_mode' : 'dark_mode'}</span>
             </button>
           </div>
-        </div>
+        </header>
 
-        {/* ── KEY METRICS / STATS GRID ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mt-8">
+        {/* ── KEY METRICS ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { label: 'Covered Statutes', value: acts.length, suffix: 'Acts', desc: 'Standardized codes of India', icon: 'gavel', color: 'text-[#c9a84c]', bg: 'bg-[#c9a84c]', glow: 'shadow-[#c9a84c]/20' },
-            { label: 'Unified Library', value: '2,201', suffix: 'Sections', desc: 'Full text indices loaded', icon: 'menu_book', color: 'text-purple-500', bg: 'bg-purple-500', glow: 'shadow-purple-500/20' },
-            { label: 'Saved Bookmarks', value: bookmarks.length, suffix: 'Bookmarks', desc: 'Saved for active litigation', icon: 'bookmark', color: 'text-amber-500', bg: 'bg-amber-500', glow: 'shadow-amber-500/20' },
-            { label: 'Case Annotations', value: notes.length, suffix: 'Active Notes', desc: 'Personal statutory remarks', icon: 'edit_note', color: 'text-blue-500', bg: 'bg-blue-500', glow: 'shadow-blue-500/20' }
+            { label: 'Active Statutes', value: acts.length, suffix: 'Codes', icon: 'gavel', color: 'from-[#c9a84c] to-[#e6c364]', shadow: 'shadow-[#c9a84c]/20' },
+            { label: 'Indexed Sections', value: '2,201', suffix: 'Total', icon: 'account_balance', color: 'from-[#7c4dff] to-[#a88aff]', shadow: 'shadow-[#7c4dff]/20' },
+            { label: 'Saved Bookmarks', value: bookmarks.length, suffix: 'Items', icon: 'bookmark_added', color: 'from-[#38bdf8] to-[#7dd3fc]', shadow: 'shadow-[#38bdf8]/20' },
+            { label: 'Case Notes', value: notes.length, suffix: 'Active', icon: 'edit_document', color: 'from-[#10b981] to-[#34d399]', shadow: 'shadow-[#10b981]/20' }
           ].map((metric, i) => (
-            <div key={i} className={`bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-2xl border border-gray-200/50 dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-500 animate-slide-card delay-${(i + 1) * 100} card-hover group/metric`}>
-              <div className={`absolute top-0 right-0 w-32 h-32 ${metric.bg} opacity-[0.03] dark:opacity-[0.05] rounded-bl-full pointer-events-none group-hover/metric:scale-110 transition-transform duration-500`} />
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{metric.label}</span>
-                <div className={`w-14 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-center shadow-lg ${metric.glow} group-hover/metric:-translate-y-1 transition-transform duration-300`}>
-                  <span className={`material-symbols-outlined ${metric.color}`} style={{ fontSize: '28px' }}>{metric.icon}</span>
-                </div>
+            <div key={i} className={`group relative overflow-hidden bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border border-gray-200 dark:border-white/5 rounded-2xl p-6 transition-all duration-300 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-xl ${metric.shadow} dark:hover:shadow-2xl dark:hover:shadow-black/50`}>
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-300 text-gray-900 dark:text-white">
+                <span className="material-symbols-outlined text-6xl">{metric.icon}</span>
               </div>
-              <div className="space-y-2">
-                <p className="text-4xl font-semibold text-gray-900 dark:text-white tracking-tight">
-                  <AnimatedCounter value={metric.value} /> <span className="text-xl font-semibold text-gray-400">{metric.suffix}</span>
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{metric.desc}</p>
+              <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br ${metric.color} bg-opacity-10 text-white shadow-lg`}>
+                    <span className="material-symbols-outlined text-[20px]">{metric.icon}</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-500 dark:text-[#94a3b8] uppercase tracking-wider">{metric.label}</span>
+                </div>
+                <div>
+                  <h3 className="text-4xl font-semibold text-gray-900 dark:text-white tracking-tight flex items-baseline gap-2">
+                    <AnimatedCounter value={metric.value} />
+                    <span className="text-base font-medium text-gray-500 dark:text-[#64748b]">{metric.suffix}</span>
+                  </h3>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* ── ACT SELECTOR SECTION ── */}
-        <div className="space-y-8 animate-fade-in-up delay-150 pt-8 mt-8">
-          <div className="flex items-center justify-between px-2">
+        {/* ── EXPLORE CODES ── */}
+        <section className="space-y-6 pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#c9a84c] text-3xl">local_library</span>
-              Browse Legal Codes
+              <span className="material-symbols-outlined text-[#c9a84c]">library_books</span>
+              Primary Legal Codes
             </h2>
-            <span className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-4 py-2 rounded-full">Select to explore</span>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-            {acts.map((act, idx) => {
-              const delayClass = actDelays[idx % actDelays.length];
-              return (
-                <div
-                  key={act.actCode}
-                  onClick={() => navigate(`/dashboard/browse?actCode=${act.actCode}`)}
-                  className={`group/act cursor-pointer relative bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-8 rounded-2xl border shadow-sm flex flex-col justify-between overflow-hidden animate-fade-in-up card-hover ${delayClass} ${act.isStarred
-                      ? 'border-[#c9a84c]/50 dark:border-[#c9a84c]/30 animate-border-pulse'
-                      : 'border-gray-200/50 dark:border-white/10 hover:border-[#c9a84c]/50 dark:hover:border-[#7c4dff]/50'
-                    }`}
-                  style={{ minHeight: '220px' }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover/act:opacity-100 transition-opacity duration-500"></div>
-                  {act.isStarred && (
-                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#c9a84c] to-[#f0d074]" />
-                  )}
-
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between gap-2 mb-5">
-                      <span className="text-sm font-semibold px-4 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg tracking-widest shadow-md">
-                        {act.actCode}
-                      </span>
-                      <span className="text-sm font-semibold text-gray-500 dark:text-[#e6c364] bg-gray-100 dark:bg-[#c9a84c]/10 px-3 py-1.5 rounded-md">
-                        {act.actYear}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white group-hover/act:text-[#c9a84c] dark:group-hover/act:text-[#cdbdff] transition-colors leading-tight mb-3">
-                      {act.actName}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed font-medium">
-                      {act.description}
-                    </p>
-                  </div>
-
-                  <div className="relative z-10 mt-6 pt-5 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-md">
-                      {act.totalSections} sections
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {acts.map((act) => (
+              <div
+                key={act.actCode}
+                onClick={() => navigate(`/dashboard/browse?actCode=${act.actCode}`)}
+                className={`group cursor-pointer relative flex flex-col justify-between bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border rounded-2xl p-6 min-h-[200px] transition-all duration-300 ${
+                  act.isStarred 
+                    ? 'border-[#c9a84c]/40 hover:border-[#c9a84c] shadow-[0_0_15px_rgba(201,168,76,0.1)] hover:shadow-[0_0_25px_rgba(201,168,76,0.2)]' 
+                    : 'border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20'
+                }`}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between">
+                    <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-[#c9a84c] transition-colors">{act.actCode}</span>
+                    <span className="text-xs font-semibold px-2.5 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded text-gray-600 dark:text-[#94a3b8] group-hover:bg-[#c9a84c]/10 group-hover:text-[#c9a84c] group-hover:border-[#c9a84c]/20 transition-colors">
+                      {act.actYear}
                     </span>
-                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover/act:bg-[#c9a84c] group-hover/act:text-white dark:group-hover/act:bg-[#7c4dff] transition-all duration-300 transform group-hover/act:translate-x-1">
-                      <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-                    </div>
+                  </div>
+                  <h3 className="text-gray-800 dark:text-[#e2e8f0] font-medium leading-snug">{act.actName}</h3>
+                </div>
+                <div className="pt-4 mt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <span className="text-xs text-gray-500 dark:text-[#64748b] font-medium">{act.totalSections} Sections</span>
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-[#c9a84c] group-hover:text-black transition-all duration-300">
+                    <span className="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform text-gray-500 dark:text-gray-400 group-hover:text-black">arrow_forward</span>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
-        {/* ── SPOTLIGHT & NOTES SECTION ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 animate-fade-in-up delay-300 pt-8 mt-8">
-
-          <div className="lg:col-span-8 bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg relative overflow-hidden transition-all duration-500 flex flex-col justify-between group/spotlight">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-500/10 dark:bg-[#7c4dff]/10 rounded-full blur-3xl pointer-events-none group-hover/spotlight:bg-purple-500/20 transition-colors duration-700" />
-
-            <div className="relative z-10">
-              <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[#c9a84c] dark:text-[#e6c364] animate-pulse text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
+        {/* ── SPOTLIGHT & ANNOTATIONS GRID ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+          
+          {/* Spotlight Column */}
+          <div className="lg:col-span-7 flex flex-col">
+            <div className="bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-8 lg:p-10 flex-1 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#c9a84c] to-transparent opacity-50" />
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-[#c9a84c]/10 dark:bg-[#c9a84c]/5 rounded-full blur-[80px] pointer-events-none" />
+              
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#c9a84c]/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[#c9a84c]">auto_awesome</span>
                   </div>
-                  <span className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Statutory Spotlight</span>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white tracking-widest uppercase">Statutory Spotlight</h2>
                 </div>
                 <button
                   onClick={rollSpotlight}
-                  className="group/roll flex items-center gap-3 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20 text-sm font-semibold transition-all text-gray-900 dark:text-white shadow-sm hover:shadow"
+                  className="text-xs font-semibold px-4 py-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-full text-gray-600 dark:text-[#94a3b8] hover:text-gray-900 dark:hover:text-white transition-all flex items-center gap-2"
                 >
-                  <span className="material-symbols-outlined text-[20px] group-hover/roll:rotate-180 transition-transform duration-500">autorenew</span>
-                  <span>Roll Another</span>
+                  <span className="material-symbols-outlined text-[14px]">sync</span>
+                  Roll
                 </button>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg shadow-md uppercase tracking-wider">
-                    {spotlight.actCode} Sec {spotlight.sectionNumber}
+              <div className="space-y-6 relative z-10">
+                <div className="flex flex-wrap gap-3">
+                  <span className="text-xs font-bold px-3 py-1.5 bg-[#c9a84c] text-white dark:text-black rounded uppercase tracking-wider shadow-[0_0_15px_rgba(201,168,76,0.3)]">
+                    {spotlight.actCode} § {spotlight.sectionNumber}
                   </span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold bg-gray-100 dark:bg-white/5 px-4 py-2 rounded-lg border border-gray-200 dark:border-white/5">{spotlight.citation}</span>
+                  <span className="text-xs font-medium px-3 py-1.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-[#94a3b8] rounded">
+                    {spotlight.citation}
+                  </span>
                 </div>
-                <h3 className="text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white leading-tight tracking-tight">
+                <h3 className="text-3xl font-semibold text-gray-900 dark:text-white leading-tight">
                   {spotlight.sectionTitle}
                 </h3>
-                <div className="relative mt-6">
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#c9a84c] to-purple-500 rounded-full"></div>
-                  <p className="text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium bg-gradient-to-r from-gray-50 to-transparent dark:from-white/5 dark:to-transparent pl-8 pr-6 py-6 rounded-r-2xl">
+                <div className="relative pl-6 border-l-2 border-[#c9a84c]/50 dark:border-[#c9a84c]/30">
+                  <p className="text-lg text-gray-600 dark:text-[#cbd5e1] leading-relaxed font-light">
                     {spotlight.sectionDesc}
                   </p>
                 </div>
+                <div className="pt-8">
+                  <button
+                    onClick={() => setNewNoteRef(`${spotlight.actCode} Section ${spotlight.sectionNumber}`)}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-semibold rounded-xl hover:bg-[#c9a84c] dark:hover:bg-[#c9a84c] transition-colors duration-300 shadow-xl"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">edit</span>
+                    Draft Note for Section
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="relative z-10 mt-10 pt-6 border-t border-gray-200 dark:border-white/10 flex items-center justify-between gap-6">
-              <span className="text-base font-semibold text-[#c9a84c] flex items-center gap-3 bg-[#c9a84c]/10 px-4 py-2 rounded-lg">
-                <span className="material-symbols-outlined text-[20px]">verified_user</span>
-                Decoded Legal Text
-              </span>
-              <button
-                onClick={() => setNewNoteRef(`${spotlight.actCode} Section ${spotlight.sectionNumber}`)}
-                className="text-base font-semibold px-8 py-4 rounded-xl bg-gray-900 dark:bg-[#7c4dff] text-white hover:bg-gray-800 dark:hover:bg-[#6538e6] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-3"
-              >
-                <span className="material-symbols-outlined text-[20px]">edit_note</span>
-                Annotate Section
-              </button>
             </div>
           </div>
 
-          <div className="lg:col-span-4 bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-4 border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-blue-500 dark:text-blue-400 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_document</span>
+          {/* Quick Note Column */}
+          <div className="lg:col-span-5 flex flex-col">
+            <div className="bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-8 lg:p-10 flex-1 relative">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 rounded-full bg-[#7c4dff]/10 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#7c4dff]">add_notes</span>
                 </div>
-                <span className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Quick Annotations</span>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white tracking-widest uppercase">Quick Annotation</h2>
               </div>
 
               <form onSubmit={handleAddNote} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Section Reference</label>
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-[#94a3b8] uppercase tracking-wider">Reference</label>
                   <input
                     type="text"
                     placeholder="e.g. IPC Section 302"
                     value={newNoteRef}
                     onChange={(e) => setNewNoteRef(e.target.value)}
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#7c4dff] focus:ring-1 focus:ring-[#7c4dff] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/20 outline-none transition-all"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Personal Remarks</label>
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-[#94a3b8] uppercase tracking-wider">Remarks / Case Facts</label>
                   <textarea
-                    placeholder="Annotate facts, case files, or deadlines..."
+                    placeholder="Enter your confidential notes..."
                     value={newNoteText}
                     onChange={(e) => setNewNoteText(e.target.value)}
-                    rows="4"
-                    className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 text-lg font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm resize-none"
+                    rows="5"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl focus:border-[#7c4dff] focus:ring-1 focus:ring-[#7c4dff] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/20 outline-none transition-all resize-none"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base uppercase tracking-widest shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 mt-4"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#7c4dff] hover:bg-[#6538e6] text-white font-semibold rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(124,77,255,0.2)] hover:shadow-[0_0_30px_rgba(124,77,255,0.4)]"
                 >
                   <span className="material-symbols-outlined text-[20px]">save</span>
-                  Save Annotation
+                  Save to Vault
                 </button>
               </form>
             </div>
-
-            <div className="mt-8 p-5 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 flex items-start gap-4">
-              <span className="material-symbols-outlined text-green-600 dark:text-green-400 mt-1">lock</span>
-              <p className="text-sm text-green-800 dark:text-green-300 font-semibold leading-relaxed">
-                Annotations are secured with end-to-end encryption under client-attorney privilege.
-              </p>
-            </div>
           </div>
         </div>
 
-        {/* ── NOTES & BOOKMARKS VISUAL LISTS ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-fade-in-up delay-350 pt-8 mt-8">
-
-          <div className="bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-amber-500 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>bookmark</span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Saved Bookmarks</h3>
-              </div>
-              <Link to="/dashboard/bookmarks" className="text-sm font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 bg-amber-50 dark:bg-amber-500/10 px-4 py-2 rounded-lg transition-colors">View All</Link>
+        {/* ── LISTS: BOOKMARKS & NOTES ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
+          
+          {/* Bookmarks List */}
+          <div className="bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-8 flex flex-col h-[500px]">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-white/5">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white tracking-widest uppercase flex items-center gap-3">
+                <span className="material-symbols-outlined text-[#38bdf8]">bookmark</span>
+                Saved Bookmarks
+              </h2>
+              <Link to="/dashboard/bookmarks" className="text-xs font-bold text-[#38bdf8] hover:text-sky-600 dark:hover:text-white uppercase tracking-wider transition-colors">View All</Link>
             </div>
-
-            <div className="space-y-6">
-              {bookmarks.map((bookmark) => (
-                <div
-                  key={bookmark._id}
-                  className="group/bm p-6 rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/5 flex items-start justify-between gap-5 transition-all hover:shadow-md hover:border-amber-500/30 dark:hover:border-amber-500/30"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-sm font-semibold px-3 py-1.5 bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 rounded-md uppercase tracking-wider">
-                        {bookmark.actCode} Sec {bookmark.sectionNumber}
-                      </span>
-                      <span className="text-base font-semibold text-gray-900 dark:text-white">{bookmark.sectionTitle}</span>
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+              {bookmarks.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-white/20">
+                  <span className="material-symbols-outlined text-5xl mb-3">bookmark_border</span>
+                  <p className="text-sm font-medium">No bookmarks saved yet.</p>
+                </div>
+              ) : (
+                bookmarks.map((b) => (
+                  <div key={b._id} className="group relative p-5 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-2xl hover:border-[#38bdf8]/50 dark:hover:border-[#38bdf8]/30 transition-all duration-300">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold px-2 py-0.5 bg-[#38bdf8]/10 text-[#0284c7] dark:text-[#38bdf8] rounded uppercase tracking-wider border border-[#38bdf8]/20">
+                          {b.actCode} § {b.sectionNumber}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{b.sectionTitle}</span>
+                      </div>
+                      <button
+                        onClick={() => setBookmarks(prev => prev.filter(item => item._id !== b._id))}
+                        className="text-gray-400 dark:text-white/20 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                      </button>
                     </div>
-                    <p className="text-base text-gray-600 dark:text-gray-400 line-clamp-2 italic font-medium bg-gray-50 dark:bg-white/5 px-4 py-3 rounded-xl border border-gray-100 dark:border-white/5">
-                      &ldquo;{bookmark.note || 'No notes added.'}&rdquo;
-                    </p>
+                    <p className="text-sm text-gray-500 dark:text-[#94a3b8] font-light italic border-l-2 border-gray-300 dark:border-white/10 pl-3 mt-3">&ldquo;{b.note || 'No description provided.'}&rdquo;</p>
                   </div>
-                  <button
-                    onClick={() => setBookmarks(prev => prev.filter(b => b._id !== bookmark._id))}
-                    className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover/bm:opacity-100 transition-all hover:bg-red-500 hover:text-white shrink-0"
-                    aria-label="Remove bookmark"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">delete_outline</span>
-                  </button>
-                </div>
-              ))}
-              {bookmarks.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-3">bookmark_border</span>
-                  <p className="text-base font-semibold text-gray-500 dark:text-gray-400">No saved bookmarks yet.</p>
-                </div>
+                ))
               )}
             </div>
           </div>
 
-          <div className="bg-white/60 dark:bg-[#16121f]/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-lg transition-all duration-500">
-            <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-6 mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-blue-500 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white uppercase tracking-widest">Recent Annotations</h3>
-              </div>
-              <Link to="/dashboard/notes" className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 bg-blue-50 dark:bg-blue-500/10 px-4 py-2 rounded-lg transition-colors">View All</Link>
+          {/* Notes List */}
+          <div className="bg-white/80 dark:bg-[#111116]/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-8 flex flex-col h-[500px]">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-white/5">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white tracking-widest uppercase flex items-center gap-3">
+                <span className="material-symbols-outlined text-[#10b981]">description</span>
+                Recent Notes
+              </h2>
+              <Link to="/dashboard/notes" className="text-xs font-bold text-[#10b981] hover:text-emerald-700 dark:hover:text-white uppercase tracking-wider transition-colors">View All</Link>
             </div>
-
-            <div className="space-y-6">
-              {notes.map((note) => (
-                <div
-                  key={note._id}
-                  className="group/note p-6 rounded-2xl bg-white dark:bg-black/20 border border-gray-200 dark:border-white/5 flex items-start justify-between gap-5 transition-all hover:shadow-md hover:border-blue-500/30 dark:hover:border-blue-500/30"
-                >
-                  <div className="space-y-3 flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-md uppercase tracking-wider">
-                        {note.sectionRef}
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+              {notes.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-white/20">
+                  <span className="material-symbols-outlined text-5xl mb-3">speaker_notes_off</span>
+                  <p className="text-sm font-medium">No active notes.</p>
+                </div>
+              ) : (
+                notes.map((n) => (
+                  <div key={n._id} className="group relative p-5 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-2xl hover:border-[#10b981]/50 dark:hover:border-[#10b981]/30 transition-all duration-300">
+                    <div className="flex justify-between items-start mb-3">
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-[#10b981]/10 text-[#047857] dark:text-[#10b981] rounded uppercase tracking-wider border border-[#10b981]/20">
+                        {n.sectionRef}
                       </span>
-                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-black/30 px-3 py-1.5 rounded-md">{note.date}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-medium text-gray-500 dark:text-[#64748b]">{n.date}</span>
+                        <button
+                          onClick={() => handleDeleteNote(n._id)}
+                          className="text-gray-400 dark:text-white/20 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                      {note.noteText}
-                    </p>
+                    <p className="text-sm text-gray-600 dark:text-[#cbd5e1] font-light leading-relaxed whitespace-pre-wrap">{n.noteText}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteNote(note._id)}
-                    className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover/note:opacity-100 transition-all hover:bg-red-500 hover:text-white shrink-0 mt-1"
-                    aria-label="Delete annotation"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">delete_outline</span>
-                  </button>
-                </div>
-              ))}
-              {notes.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-3">speaker_notes_off</span>
-                  <p className="text-base font-semibold text-gray-500 dark:text-gray-400">No annotations recorded yet.</p>
-                </div>
+                ))
               )}
             </div>
           </div>
 
         </div>
-
       </div>
-
+      
+      {/* Custom Scrollbar Styles appended directly or assumed in CSS */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(150,150,150,0.5); }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+      `}} />
     </div>
   );
 }
