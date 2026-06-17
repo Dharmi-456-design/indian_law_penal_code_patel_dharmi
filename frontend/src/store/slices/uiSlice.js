@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const getInitialTheme = () => {
+  const saved = localStorage.getItem('lex_theme');
+  if (saved) return saved;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
 const initialState = {
-  theme: 'dark', // Always dark — light mode disabled
+  theme: getInitialTheme(),
   sidebarOpen: false,
   toast: {
     message: '',
@@ -15,9 +21,8 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     toggleTheme: (state) => {
-      // Always stay in dark mode — light mode is disabled
-      state.theme = 'dark';
-      localStorage.setItem('lex_theme', 'dark');
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('lex_theme', state.theme);
     },
     toggleSidebar: (state) => {
       state.sidebarOpen = !state.sidebarOpen;

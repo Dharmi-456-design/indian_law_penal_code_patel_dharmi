@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toggleSidebar } from '../../store/slices/uiSlice';
+import { toggleSidebar, toggleTheme } from '../../store/slices/uiSlice';
 import { setQuery, removeFromHistory } from '../../store/slices/searchSlice';
 
 const Navbar = () => {
@@ -16,15 +16,7 @@ const Navbar = () => {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
-  /* Sync dark class on <html> */
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [isDark]);
+  // HTML dark mode class is synced centrally in App.jsx
 
   /* Close dropdown on outside click */
   useEffect(() => {
@@ -158,21 +150,18 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right: Dark mode badge + Notifications */}
+      {/* Right: Theme Toggle + Notifications */}
       <div className="flex items-center gap-3">
-        {/* Dark mode permanent indicator — no toggle */}
-        <div
-          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#111417] border border-[#c9a84c]/20"
-          title="Dark mode is always on"
+        <button
+          onClick={() => dispatch(toggleTheme())}
+          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:scale-110 active:scale-95 transition-all duration-300 transform"
+          aria-label="Toggle theme"
+          id="navbar-theme-toggle"
         >
-          <span
-            className="material-symbols-outlined text-[#c9a84c]"
-            style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}
-          >
-            dark_mode
+          <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af] transition-transform duration-500 ease-in-out transform rotate-0 dark:rotate-[360deg]" style={{ fontSize: '20px' }}>
+            {isDark ? 'light_mode' : 'dark_mode'}
           </span>
-          <span className="text-[10px] font-semibold text-[#c9a84c] tracking-wide uppercase">Dark</span>
-        </div>
+        </button>
 
         <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors relative">
           <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>notifications</span>
