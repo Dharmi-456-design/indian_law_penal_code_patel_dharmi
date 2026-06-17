@@ -115,7 +115,7 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
 
   return (
     <div
-      className={`bm-card group relative flex flex-col bg-[#0d1117] border border-[#21262d] rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#30363d] hover:shadow-[0_0_24px_rgba(0,0,0,0.5)] ${removing ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
+      className={`bm-card group relative flex flex-col bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#21262d] rounded-2xl overflow-hidden transition-all duration-300 hover:border-gray-300 dark:hover:border-[#30363d] hover:shadow-lg dark:hover:shadow-[0_0_24px_rgba(0,0,0,0.5)] ${removing ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}
       style={{ transition: 'opacity 0.3s, transform 0.3s, border-color 0.2s, box-shadow 0.2s' }}
     >
       {/* Top accent line */}
@@ -124,33 +124,33 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
       <div className="p-5 flex flex-col gap-3 flex-1">
         {/* Verified badge */}
         {bookmark.verified && (
-          <span className="self-start text-[10px] font-bold px-2.5 py-1 border border-[#30363d] text-[#8b949e] rounded uppercase tracking-widest">
+          <span className="self-start text-[10px] font-bold px-2.5 py-1 border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded uppercase tracking-widest bg-gray-50 dark:bg-transparent">
             VERIFIED
           </span>
         )}
 
         {/* Title */}
         <div>
-          <h3 className="text-[15px] font-semibold text-[#c9a84c] leading-snug group-hover:text-[#e6c364] transition-colors">
+          <h3 className="text-[15px] font-semibold text-[#8f6d19] dark:text-[#c9a84c] leading-snug group-hover:text-amber-600 dark:group-hover:text-[#e6c364] transition-colors">
             {bookmark.sectionTitle || `Section ${bookmark.sectionNumber}`}
           </h3>
-          <p className="text-[11px] font-mono text-[#6e7681] mt-0.5 tracking-wide">{actFullName}</p>
+          <p className="text-[11px] font-mono text-gray-400 dark:text-[#6e7681] mt-0.5 tracking-wide">{actFullName}</p>
         </div>
 
         {/* Text excerpt box */}
         {bookmark.description && (
-          <div className="bg-[#161b22] border border-[#21262d] rounded-lg p-3">
-            <p className="text-[12px] text-[#8b949e] leading-relaxed line-clamp-4">
+          <div className="bg-gray-50 dark:bg-[#161b22] border border-gray-150 dark:border-[#21262d] rounded-lg p-3">
+            <p className="text-[12px] text-gray-600 dark:text-[#8b949e] leading-relaxed line-clamp-4">
               {bookmark.description}
             </p>
 
             {/* Note section */}
             {bookmark.note && (
               <>
-                <div className="my-2 border-t border-dashed border-[#30363d]" />
+                <div className="my-2 border-t border-dashed border-gray-200 dark:border-[#30363d]" />
                 <div className="flex items-start gap-1.5">
-                  <span className="material-symbols-outlined text-[#c9a84c] text-[13px] mt-0.5 shrink-0">edit_note</span>
-                  <p className="text-[11px] font-mono text-[#c9a84c]/80 leading-relaxed">{bookmark.note}</p>
+                  <span className="material-symbols-outlined text-[#8f6d19] dark:text-[#c9a84c] text-[13px] mt-0.5 shrink-0">edit_note</span>
+                  <p className="text-[11px] font-mono text-gray-700 dark:text-[#c9a84c]/80 leading-relaxed">{bookmark.note}</p>
                 </div>
               </>
             )}
@@ -163,7 +163,7 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
             {bookmark.tags.map(tag => (
               <span
                 key={tag}
-                className="text-[10px] font-semibold px-2 py-0.5 bg-[#161b22] border border-[#30363d] text-[#8b949e] rounded tracking-wide"
+                className="text-[10px] font-semibold px-2 py-0.5 bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded tracking-wide"
               >
                 {tag}
               </span>
@@ -173,17 +173,17 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
       </div>
 
       {/* Card footer actions */}
-      <div className="border-t border-[#21262d] px-5 py-3 flex items-center justify-between bg-[#0d1117]">
+      <div className="border-t border-gray-200 dark:border-[#21262d] px-5 py-3 flex items-center justify-between bg-gray-50/50 dark:bg-[#0d1117]">
         <button
           onClick={handleOpen}
-          className="text-[11px] font-semibold text-[#58a6ff] hover:text-[#79c0ff] flex items-center gap-1 transition-colors"
+          className="text-[11px] font-semibold text-blue-600 dark:text-[#58a6ff] hover:text-blue-500 dark:hover:text-[#79c0ff] flex items-center gap-1 transition-colors"
         >
           <span className="material-symbols-outlined text-[13px]">open_in_new</span>
           View Section
         </button>
         <button
           onClick={handleRemove}
-          className="text-[11px] text-[#6e7681] hover:text-red-400 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100"
+          className="text-[11px] text-gray-400 dark:text-[#6e7681] hover:text-red-500 dark:hover:text-red-400 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100"
         >
           <span className="material-symbols-outlined text-[13px]">bookmark_remove</span>
           Remove
@@ -217,7 +217,7 @@ export default function BookmarksPage() {
           const mapped = data.map(b => {
             const actCode = b.lawId?.actCode || b.actCode || '';
             const sectionNumber = b.lawId?.sectionNumber || b.sectionNumber || '';
-            const sectionTitle = b.lawId?.sectionTitle || b.sectionTitle || `Section ${sectionNumber}`;
+            const sectionTitle = b.lawId?.sectionTitle || b.lawId?.sectionTitle || `Section ${sectionNumber}`;
             const description = b.lawId?.description || b.description || '';
             const tags = ACT_TAG_MAP[actCode] || [actCode];
             return { _id: b._id, actCode, sectionNumber, sectionTitle, description, note: b.note || '', tags, verified: b.lawId?.isVerified || false };
@@ -274,7 +274,7 @@ export default function BookmarksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#010409] text-white font-sans">
+    <div className="min-h-screen bg-transparent text-gray-900 dark:text-white font-sans">
       {/* ── Background glow ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[20%] w-[600px] h-[400px] bg-[#c9a84c]/[0.04] blur-[120px] rounded-full" />
@@ -286,8 +286,8 @@ export default function BookmarksPage() {
         {/* ── Page header ── */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
           <div>
-            <h1 className="text-4xl font-semibold text-white tracking-tight mb-1">Bookmarks Library</h1>
-            <p className="text-[#6e7681] text-[15px] font-light">
+            <h1 className="text-4xl font-semibold text-gray-900 dark:text-white tracking-tight mb-1">Bookmarks Library</h1>
+            <p className="text-gray-500 dark:text-[#6e7681] text-[15px] font-light">
               Manage and organize your saved legal sections and annotations.
             </p>
           </div>
@@ -295,21 +295,21 @@ export default function BookmarksPage() {
           {/* Search + Filter row */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#6e7681] text-[18px]">search</span>
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] text-[18px]">search</span>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
                 placeholder="Search bookmarks..."
-                className="w-[260px] pl-9 pr-4 py-2.5 bg-[#161b22] border border-[#30363d] rounded-xl text-sm text-white placeholder-[#6e7681] outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 transition-all"
+                className="w-[260px] pl-9 pr-4 py-2.5 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-xl text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6e7681] outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 transition-all shadow-sm"
               />
             </div>
             <button
               onClick={() => setShowFilterPanel(prev => !prev)}
               className={`flex items-center justify-center w-10 h-10 border rounded-xl active:scale-95 transition-all ${
                 showFilterPanel
-                  ? 'bg-[#c9a84c]/10 border-[#c9a84c]/50 text-[#c9a84c]'
-                  : 'bg-[#161b22] border-[#30363d] text-[#6e7681] hover:border-[#c9a84c]/50 hover:bg-[#1c2128]'
+                  ? 'bg-[#c9a84c]/10 border-[#c9a84c]/50 text-[#8f6d19] dark:text-[#c9a84c]'
+                  : 'bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d] text-gray-400 dark:text-[#6e7681] hover:border-[#c9a84c]/50 hover:bg-gray-50 dark:hover:bg-[#1c2128]'
               }`}
               title="Toggle tag filters"
             >
@@ -331,8 +331,8 @@ export default function BookmarksPage() {
               onClick={() => { setActiveTag(tag); setPage(1); }}
               className={`px-4 py-1.5 rounded-full text-[13px] font-semibold border transition-all duration-200 ${
                 activeTag === tag
-                  ? 'bg-[#c9a84c] border-[#c9a84c] text-black shadow-[0_0_12px_rgba(201,168,76,0.3)]'
-                  : 'bg-transparent border-[#30363d] text-[#8b949e] hover:border-[#c9a84c]/50 hover:text-[#c9a84c]/80'
+                  ? 'bg-[#c9a84c] border-[#c9a84c] text-white dark:text-black shadow-[0_0_12px_rgba(201,168,76,0.3)]'
+                  : 'bg-transparent border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] hover:border-[#c9a84c]/50 hover:text-[#c9a84c]/80'
               }`}
             >
               {tag}
@@ -349,19 +349,19 @@ export default function BookmarksPage() {
                 onChange={e => setNewTagInput(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') addCustomTag(); if (e.key === 'Escape') setShowTagInput(false); }}
                 placeholder="Tag name..."
-                className="px-3 py-1 bg-[#161b22] border border-[#c9a84c]/50 rounded-full text-[12px] text-white outline-none w-28"
+                className="px-3 py-1 bg-white dark:bg-[#161b22] border border-[#c9a84c]/50 rounded-full text-[12px] text-gray-900 dark:text-white outline-none w-28"
               />
-              <button onClick={addCustomTag} className="text-[#c9a84c] hover:text-white transition-colors">
+              <button onClick={addCustomTag} className="text-[#8f6d19] dark:text-[#c9a84c] hover:text-[#c9a84c] dark:hover:text-white transition-colors">
                 <span className="material-symbols-outlined text-[16px]">check</span>
               </button>
-              <button onClick={() => setShowTagInput(false)} className="text-[#6e7681] hover:text-white transition-colors">
+              <button onClick={() => setShowTagInput(false)} className="text-gray-400 dark:text-[#6e7681] hover:text-gray-900 dark:hover:text-white transition-colors">
                 <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             </div>
           ) : (
             <button
               onClick={() => setShowTagInput(true)}
-              className="px-4 py-1.5 rounded-full text-[13px] font-semibold border border-dashed border-[#30363d] text-[#8b949e] hover:border-[#c9a84c]/50 hover:text-[#c9a84c]/80 transition-all flex items-center gap-1"
+              className="px-4 py-1.5 rounded-full text-[13px] font-semibold border border-dashed border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] hover:border-[#c9a84c]/50 hover:text-[#c9a84c]/80 transition-all flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-[14px]">add</span>
               New Tag
@@ -371,17 +371,17 @@ export default function BookmarksPage() {
 
         {/* ── Stats bar ── */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-[13px] text-[#6e7681]">
+          <p className="text-[13px] text-gray-500 dark:text-[#6e7681]">
             {loading ? 'Loading...' : (
               <>
-                Showing <span className="text-white font-medium">{visible.length}</span> of{' '}
-                <span className="text-white font-medium">{filtered.length}</span> bookmarks
-                {activeTag !== 'All Bookmarks' && <> · filtered by <span className="text-[#c9a84c]">{activeTag}</span></>}
+                Showing <span className="text-gray-900 dark:text-white font-medium">{visible.length}</span> of{' '}
+                <span className="text-gray-900 dark:text-white font-medium">{filtered.length}</span> bookmarks
+                {activeTag !== 'All Bookmarks' && <> · filtered by <span className="text-[#8f6d19] dark:text-[#c9a84c]">{activeTag}</span></>}
               </>
             )}
           </p>
           {!loading && bookmarks.length > 0 && (
-            <div className="flex items-center gap-2 text-[12px] text-[#6e7681]">
+            <div className="flex items-center gap-2 text-[12px] text-gray-500 dark:text-[#6e7681]">
               <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse" />
               {bookmarks.length} saved sections
             </div>
@@ -392,14 +392,14 @@ export default function BookmarksPage() {
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="bg-[#0d1117] border border-[#21262d] rounded-2xl p-5 animate-pulse space-y-3">
-                <div className="h-3 bg-[#21262d] rounded w-1/3" />
-                <div className="h-5 bg-[#21262d] rounded w-2/3" />
-                <div className="h-3 bg-[#21262d] rounded w-1/2" />
-                <div className="h-24 bg-[#161b22] rounded-lg" />
+              <div key={i} className="bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#21262d] rounded-2xl p-5 animate-pulse space-y-3">
+                <div className="h-3 bg-gray-200 dark:bg-[#21262d] rounded w-1/3" />
+                <div className="h-5 bg-gray-200 dark:bg-[#21262d] rounded w-2/3" />
+                <div className="h-3 bg-gray-200 dark:bg-[#21262d] rounded w-1/2" />
+                <div className="h-24 bg-gray-50 dark:bg-[#161b22] rounded-lg" />
                 <div className="flex gap-2">
-                  <div className="h-4 bg-[#21262d] rounded w-16" />
-                  <div className="h-4 bg-[#21262d] rounded w-20" />
+                  <div className="h-4 bg-gray-200 dark:bg-[#21262d] rounded w-16" />
+                  <div className="h-4 bg-gray-200 dark:bg-[#21262d] rounded w-20" />
                 </div>
               </div>
             ))}
@@ -409,16 +409,16 @@ export default function BookmarksPage() {
         {/* ── Empty state ── */}
         {!loading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 rounded-full bg-[#161b22] border border-[#21262d] flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-[#6e7681] text-4xl">bookmarks</span>
+            <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#21262d] flex items-center justify-center mb-4">
+              <span className="material-symbols-outlined text-gray-400 dark:text-[#6e7681] text-4xl">bookmarks</span>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">No bookmarks found</h3>
-            <p className="text-[#6e7681] text-sm max-w-xs">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">No bookmarks found</h3>
+            <p className="text-gray-500 dark:text-[#6e7681] text-sm max-w-xs">
               {searchQuery ? `No results for "${searchQuery}". Try a different search.` : 'Start browsing legal sections and bookmark them for quick access.'}
             </p>
             <button
               onClick={() => navigate('/dashboard/browse')}
-              className="mt-6 px-6 py-2.5 bg-[#c9a84c] hover:bg-[#b0903a] text-black font-semibold rounded-xl transition-colors text-sm"
+              className="mt-6 px-6 py-2.5 bg-[#c9a84c] hover:bg-[#b0903a] text-white dark:text-black font-semibold rounded-xl transition-colors text-sm"
             >
               Browse Legal Codes
             </button>
@@ -444,7 +444,7 @@ export default function BookmarksPage() {
           <div className="flex justify-center mt-10">
             <button
               onClick={() => setPage(p => p + 1)}
-              className="flex items-center gap-2 px-8 py-3 bg-[#161b22] border border-[#30363d] hover:border-[#c9a84c]/50 hover:bg-[#1c2128] text-[#8b949e] hover:text-[#c9a84c] rounded-xl font-semibold text-sm transition-all duration-200"
+              className="flex items-center gap-2 px-8 py-3 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] hover:border-[#c9a84c]/50 hover:bg-gray-50 dark:hover:bg-[#1c2128] text-gray-500 dark:text-[#8b949e] hover:text-[#8f6d19] dark:hover:text-[#c9a84c] rounded-xl font-semibold text-sm transition-all duration-200 shadow-sm"
             >
               Load More Bookmarks
               <span className="material-symbols-outlined text-[16px]">expand_more</span>
@@ -455,10 +455,10 @@ export default function BookmarksPage() {
         {/* ── End of results ── */}
         {!loading && !hasMore && visible.length > 0 && (
           <div className="flex justify-center mt-10">
-            <p className="text-[12px] text-[#6e7681] flex items-center gap-2">
-              <span className="w-12 h-px bg-[#21262d]" />
+            <p className="text-[12px] text-gray-400 dark:text-[#6e7681] flex items-center gap-2">
+              <span className="w-12 h-px bg-gray-250 dark:bg-[#21262d]" />
               All {filtered.length} bookmarks shown
-              <span className="w-12 h-px bg-[#21262d]" />
+              <span className="w-12 h-px bg-gray-250 dark:bg-[#21262d]" />
             </p>
           </div>
         )}
