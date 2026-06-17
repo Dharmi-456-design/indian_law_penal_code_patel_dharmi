@@ -56,6 +56,24 @@ const validateTopQueries = [
     validate
 ];
 
+const validateSearchLogs = [
+    query('page')
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage('Page must be a positive integer')
+        .toInt(),
+    query('limit')
+        .optional()
+        .isInt({ min: 1, max: 100 })
+        .withMessage('Limit must be a positive integer between 1 and 100')
+        .toInt(),
+    query('search')
+        .optional()
+        .isString()
+        .trim(),
+    validate
+];
+
 module.exports = {
     validateOverview,
     validateActDistribution,
@@ -63,5 +81,6 @@ module.exports = {
     validateTopViewed,
     validateSearchTrends,
     validateUserGrowth,
-    validateTopQueries
+    validateTopQueries,
+    validateSearchLogs
 };

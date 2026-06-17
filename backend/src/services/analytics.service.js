@@ -173,6 +173,46 @@ const getTopSearchQueries = async (limit = 10) => {
     ]);
 };
 
+/**
+ * Get paginated and searchable search logs (admin view)
+ */
+const getSearchLogs = async ({ page = 1, limit = 20, search }) => {
+    const filter = {};
+    
+    if (search) {
+        // Find users matching search by name or email
+        const users = await User.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ]
+        }).select('_id');
+        const userIds = users.map(u => u._id);
+
+        filter.$or = [
+            { query: { $regex: search, $options: 'i' } },
+            { actCode: { $regex: search, $options: 'i' } },
+            { userId: { $in: userIds } }
+        ];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [data, total] = await Promise.all([
+        SearchLog.find(filter)
+            .populate('userId', 'name email role')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(Number(limit)),
+        SearchLog.countDocuments(filter)
+    ]);
+
+    const { buildPaginationMeta } = require('../utils/paginationUtil');
+    const meta = buildPaginationMeta(total, Number(page), Number(limit));
+
+    return { data, meta };
+};
+
 module.exports = {
     getPlatformStats,
     getActDistribution,
@@ -180,5 +220,6 @@ module.exports = {
     getTopViewedLaws,
     getSearchTrends,
     getUserGrowth,
-    getTopSearchQueries
+    getTopSearchQueries,
+    getSearchLogs
 };

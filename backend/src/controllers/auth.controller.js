@@ -72,10 +72,36 @@ const logout = asyncHandler(async (req, res) => {
     );
 });
 
+const updateProfile = asyncHandler(async (req, res) => {
+    const userService = require('../services/user.service');
+    const userId = req.user._id;
+    const { name, barCouncil } = req.body;
+
+    const updatedUser = await userService.updateProfile(userId, { name, barCouncil });
+
+    res.status(200).json(
+        new ApiResponse(200, updatedUser, 'Profile updated successfully')
+    );
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+    const userService = require('../services/user.service');
+    const userId = req.user._id;
+    const { currentPassword, newPassword } = req.body;
+
+    await userService.updateProfile(userId, { currentPassword, newPassword });
+
+    res.status(200).json(
+        new ApiResponse(200, {}, 'Password updated successfully')
+    );
+});
+
 module.exports = {
     register,
     login,
     refreshToken,
     getMe,
-    logout
+    logout,
+    updateProfile,
+    changePassword
 };

@@ -92,10 +92,10 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
 
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-[#21262d] text-gray-700 dark:text-[#c9d1d9] tracking-widest uppercase">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-[#21262d] text-gray-700 dark:text-[#c9d1d9] tracking-widest uppercase">
             {section.actCode}
           </span>
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#c9a84c]/10 text-[#8f6d19] dark:text-[#e6c364] border border-[#c9a84c]/20">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-[#c9a84c]/10 text-[#8f6d19] dark:text-[#e6c364] border border-[#c9a84c]/20">
             Sec. {section.sectionNumber}
           </span>
         </div>
@@ -117,17 +117,17 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
         </button>
       </div>
 
-      <h3 className="text-[15px] font-bold text-gray-900 dark:text-white leading-snug group-hover:text-[#c9a84c] transition-colors duration-200 line-clamp-2">
+      <h3 className="text-[17px] font-bold text-gray-900 dark:text-white leading-snug group-hover:text-[#c9a84c] transition-colors duration-200 line-clamp-2">
         {section.sectionTitle || section.title || 'Untitled Section'}
       </h3>
 
-      <p className="text-[13px] text-gray-500 dark:text-[#8b949e] leading-relaxed line-clamp-3">
+      <p className="text-[13.5px] text-gray-500 dark:text-[#8b949e] leading-relaxed line-clamp-3">
         {section.sectionDesc || section.content || section.description || 'No content preview available.'}
       </p>
 
       <div className="flex items-center justify-between pt-3 mt-auto border-t border-gray-100 dark:border-[#21262d]">
-        <span className="text-[11px] text-gray-400 dark:text-[#6e7681] font-medium">{section.actYear || ''}</span>
-        <span className="text-[11px] font-semibold text-[#c9a84c] flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <span className="text-xs text-gray-400 dark:text-[#6e7681] font-medium">{section.actYear || ''}</span>
+        <span className="text-xs font-semibold text-[#c9a84c] flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           View Full <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>arrow_forward</span>
         </span>
       </div>

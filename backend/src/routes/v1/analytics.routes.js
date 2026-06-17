@@ -9,7 +9,8 @@ const {
     validateTopViewed,
     validateSearchTrends,
     validateUserGrowth,
-    validateTopQueries
+    validateTopQueries,
+    validateSearchLogs
 } = require('../../validators/analytics.validator');
 
 // All analytics endpoints require auth and admin role
@@ -23,5 +24,6 @@ router.get('/users', validateUserGrowth, analyticsController.getUserGrowth);
 router.get('/top-viewed', validateTopViewed, analyticsController.getTopViewed);
 router.get('/search-trends', validateSearchTrends, analyticsController.getSearchTrends);
 router.get('/top-queries', validateTopQueries, analyticsController.getTopQueries);
+router.get('/search-logs', validateSearchLogs, analyticsController.getSearchLogs);
 
 module.exports = router;

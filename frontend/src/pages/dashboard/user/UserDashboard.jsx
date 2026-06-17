@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setUser } from '../../../store/slices/authSlice';
-import { toggleTheme } from '../../../store/slices/uiSlice';
 import api from '../../../services/api';
 
 const FALLBACK_ACTS = [
@@ -108,8 +107,7 @@ export default function UserDashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const { theme } = useSelector((state) => state.ui);
-  const isDark = theme === 'dark';
+  // Always dark — no theme switching
 
   const [acts, setActs] = useState(FALLBACK_ACTS);
   const [bookmarks, setBookmarks] = useState(DEFAULT_BOOKMARKS);
@@ -261,16 +259,11 @@ export default function UserDashboard() {
                 {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
-            {/* Theme Toggle Button */}
-            <button
-              onClick={() => dispatch(toggleTheme())}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-[#c9a84c]/50 text-gray-500 dark:text-[#c9a84c] active:scale-95 transition-all"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              <span className="material-symbols-outlined text-gray-500 dark:text-[#c9a84c]" style={{ fontSize: '20px', fontVariationSettings: isDark ? "'FILL' 1" : "'FILL' 0" }}>
-                {isDark ? 'dark_mode' : 'light_mode'}
-              </span>
-            </button>
+            {/* Dark mode permanent badge */}
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-[#c9a84c]/20">
+              <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}>dark_mode</span>
+              <span className="text-xs font-semibold text-[#c9a84c] tracking-wide uppercase hidden md:block">Dark</span>
+            </div>
           </div>
         </header>
 
