@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toggleTheme, toggleSidebar } from '../../store/slices/uiSlice';
+import { toggleSidebar } from '../../store/slices/uiSlice';
 import { setQuery, removeFromHistory } from '../../store/slices/searchSlice';
 
 const Navbar = () => {
@@ -16,11 +16,11 @@ const Navbar = () => {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
-  /* Sync dark class on <html> */
+  /* Always lock dark mode on <html> */
   useEffect(() => {
-    const root = document.documentElement;
-    isDark ? root.classList.add('dark') : root.classList.remove('dark');
-  }, [isDark]);
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('lex_theme', 'dark');
+  }, []);
 
   /* Close dropdown on outside click */
   useEffect(() => {
@@ -156,15 +156,14 @@ const Navbar = () => {
 
       {/* Right: Theme + Notifications */}
       <div className="flex items-center gap-3">
-        <button
-          onClick={() => dispatch(toggleTheme())}
-          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors"
-          aria-label="Toggle theme"
+        <div
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1d2021] cursor-default"
+          title="Dark mode active"
         >
-          <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>
-            {isDark ? 'light_mode' : 'dark_mode'}
+          <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}>
+            dark_mode
           </span>
-        </button>
+        </div>
 
         <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors relative">
           <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>notifications</span>
