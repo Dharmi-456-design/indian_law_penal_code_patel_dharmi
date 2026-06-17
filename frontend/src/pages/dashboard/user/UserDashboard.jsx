@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setUser } from '../../../store/slices/authSlice';
+import { toggleTheme } from '../../../store/slices/uiSlice';
 import api from '../../../services/api';
 
 const FALLBACK_ACTS = [
@@ -117,7 +118,6 @@ export default function UserDashboard() {
   const [newNoteRef, setNewNoteRef] = useState('');
   const [newNoteText, setNewNoteText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showThemeLock, setShowThemeLock] = useState(false);
 
   const handleGlobalSearch = (e) => {
     e.preventDefault();
@@ -261,28 +261,16 @@ export default function UserDashboard() {
                 {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
-            {/* Dark mode toggle button - locked to dark with interactive tooltip */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setShowThemeLock(true);
-                  setTimeout(() => setShowThemeLock(false), 2200);
-                }}
-                className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#1d2021] hover:bg-[#282a2b] border border-white/10 text-[#c9a84c] active:scale-90 transition-all group/theme relative"
-                title="Theme settings"
-              >
-                <span className="material-symbols-outlined text-[#c9a84c] transition-transform duration-300 group-hover/theme:rotate-45" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>
-                  dark_mode
-                </span>
-              </button>
-
-              {showThemeLock && (
-                <div className="absolute right-0 top-full mt-2 bg-[#161b22] border border-[#30363d] text-xs font-semibold px-3 py-1.5 rounded-xl text-[#c9a84c] shadow-[0_8px_24px_rgba(0,0,0,0.5)] z-50 animate-fade-in flex items-center gap-1.5 whitespace-nowrap">
-                  <span className="material-symbols-outlined text-[14px]">lock</span>
-                  Premium Dark Mode Active
-                </div>
-              )}
-            </div>
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-[#c9a84c]/50 text-gray-500 dark:text-[#c9a84c] active:scale-95 transition-all"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              <span className="material-symbols-outlined text-gray-500 dark:text-[#c9a84c]" style={{ fontSize: '20px', fontVariationSettings: isDark ? "'FILL' 1" : "'FILL' 0" }}>
+                {isDark ? 'dark_mode' : 'light_mode'}
+              </span>
+            </button>
           </div>
         </header>
 
