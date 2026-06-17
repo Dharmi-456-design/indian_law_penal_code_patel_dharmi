@@ -117,6 +117,7 @@ export default function UserDashboard() {
   const [newNoteRef, setNewNoteRef] = useState('');
   const [newNoteText, setNewNoteText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showThemeLock, setShowThemeLock] = useState(false);
 
   const handleGlobalSearch = (e) => {
     e.preventDefault();
@@ -260,12 +261,27 @@ export default function UserDashboard() {
                 {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
-            {/* Dark mode badge - always dark */}
-            <div
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#1d2021] border border-white/10 cursor-default"
-              title="Dark mode active"
-            >
-              <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>dark_mode</span>
+            {/* Dark mode toggle button - locked to dark with interactive tooltip */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setShowThemeLock(true);
+                  setTimeout(() => setShowThemeLock(false), 2200);
+                }}
+                className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#1d2021] hover:bg-[#282a2b] border border-white/10 text-[#c9a84c] active:scale-90 transition-all group/theme relative"
+                title="Theme settings"
+              >
+                <span className="material-symbols-outlined text-[#c9a84c] transition-transform duration-300 group-hover/theme:rotate-45" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>
+                  dark_mode
+                </span>
+              </button>
+
+              {showThemeLock && (
+                <div className="absolute right-0 top-full mt-2 bg-[#161b22] border border-[#30363d] text-xs font-semibold px-3 py-1.5 rounded-xl text-[#c9a84c] shadow-[0_8px_24px_rgba(0,0,0,0.5)] z-50 animate-fade-in flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="material-symbols-outlined text-[14px]">lock</span>
+                  Premium Dark Mode Active
+                </div>
+              )}
             </div>
           </div>
         </header>

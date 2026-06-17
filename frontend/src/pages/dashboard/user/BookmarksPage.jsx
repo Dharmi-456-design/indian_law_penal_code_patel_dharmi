@@ -204,6 +204,7 @@ export default function BookmarksPage() {
   const [showTagInput, setShowTagInput] = useState(false);
   const [customTags, setCustomTags] = useState([]);
   const [page, setPage] = useState(1);
+  const [showFilterPanel, setShowFilterPanel] = useState(true);
   const PAGE_SIZE = 9;
 
   /* Fetch bookmarks */
@@ -303,14 +304,27 @@ export default function BookmarksPage() {
                 className="w-[260px] pl-9 pr-4 py-2.5 bg-[#161b22] border border-[#30363d] rounded-xl text-sm text-white placeholder-[#6e7681] outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 transition-all"
               />
             </div>
-            <button className="flex items-center justify-center w-10 h-10 bg-[#161b22] border border-[#30363d] rounded-xl hover:border-[#c9a84c]/50 hover:bg-[#1c2128] transition-all">
-              <span className="material-symbols-outlined text-[#6e7681] text-[18px]">tune</span>
+            <button
+              onClick={() => setShowFilterPanel(prev => !prev)}
+              className={`flex items-center justify-center w-10 h-10 border rounded-xl active:scale-95 transition-all ${
+                showFilterPanel
+                  ? 'bg-[#c9a84c]/10 border-[#c9a84c]/50 text-[#c9a84c]'
+                  : 'bg-[#161b22] border-[#30363d] text-[#6e7681] hover:border-[#c9a84c]/50 hover:bg-[#1c2128]'
+              }`}
+              title="Toggle tag filters"
+            >
+              <span className="material-symbols-outlined text-[18px]">tune</span>
             </button>
           </div>
         </div>
 
         {/* ── Tag filter chips ── */}
-        <div className="flex flex-wrap items-center gap-2 mb-8">
+        <div
+          className={`flex flex-wrap items-center gap-2 overflow-hidden transition-all duration-350 ${
+            showFilterPanel ? 'max-h-[300px] mb-8 opacity-100' : 'max-h-0 mb-0 opacity-0 pointer-events-none'
+          }`}
+          style={{ transitionProperty: 'max-height, margin-bottom, opacity' }}
+        >
           {allTags.map(tag => (
             <button
               key={tag}
