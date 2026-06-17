@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { toggleTheme } from '../../../store/slices/uiSlice';
 import { setUser } from '../../../store/slices/authSlice';
 import api from '../../../services/api';
 
@@ -261,13 +260,13 @@ export default function UserDashboard() {
                 {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
-            <button
-              onClick={() => dispatch(toggleTheme())}
-              className="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:border-[#c9a84c]/50 text-[#c9a84c] transition-all duration-300"
-              title="Toggle Theme"
+            {/* Dark mode badge - always dark */}
+            <div
+              className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#1d2021] border border-white/10 cursor-default"
+              title="Dark mode active"
             >
-              <span className="material-symbols-outlined">{isDark ? 'light_mode' : 'dark_mode'}</span>
-            </button>
+              <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}>dark_mode</span>
+            </div>
           </div>
         </header>
 
