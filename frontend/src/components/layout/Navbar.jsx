@@ -13,6 +13,7 @@ const Navbar = () => {
 
   const [localValue, setLocalValue] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -155,15 +156,30 @@ const Navbar = () => {
       </div>
 
       {/* Right: Theme + Notifications */}
-      <div className="flex items-center gap-3">
-        <div
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1d2021] cursor-default"
-          title="Dark mode active"
+      <div className="flex items-center gap-3 relative">
+        <button
+          onClick={() => {
+            setShowTooltip(true);
+            setTimeout(() => setShowTooltip(false), 2200);
+          }}
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1d2021] hover:bg-[#282a2b] border border-white/5 active:scale-90 transition-all text-[#c9a84c] group/theme relative"
+          aria-label="Toggle theme"
+          title="Dark mode settings"
         >
-          <span className="material-symbols-outlined text-[#c9a84c]" style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}>
+          <span
+            className="material-symbols-outlined text-[#c9a84c] transition-transform duration-300 group-hover/theme:rotate-45"
+            style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}
+          >
             dark_mode
           </span>
-        </div>
+        </button>
+
+        {showTooltip && (
+          <div className="absolute right-0 top-full mt-2.5 bg-[#161b22] border border-[#30363d] text-xs font-semibold px-3 py-1.5 rounded-xl text-[#c9a84c] shadow-[0_8px_24px_rgba(0,0,0,0.5)] z-50 animate-fade-in flex items-center gap-1.5 whitespace-nowrap">
+            <span className="material-symbols-outlined text-[14px]">lock</span>
+            Premium Dark Mode Active
+          </div>
+        )}
 
         <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors relative">
           <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>notifications</span>
