@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Section = require('../models/Section.models');
 
-const dataDir = path.join(__dirname, '../data');
+const dataDir = path.join(__dirname, '../../data');
 
 const actFiles = {
     'IPC': 'ipc.json',

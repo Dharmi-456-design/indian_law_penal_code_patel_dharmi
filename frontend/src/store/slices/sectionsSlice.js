@@ -34,15 +34,23 @@ export const fetchSections = createAsyncThunk(
   'sections/fetchSections',
   async ({ actCode = '', page = 1, limit = 20, sort = 'sectionNumber', q = '' } = {}, { rejectWithValue }) => {
     try {
-      const params = new URLSearchParams({ page, limit, sort });
+      // Map frontend sort format ("-sectionNumber") to backend (sortBy/sortOrder)
+      const isDesc = sort.startsWith('-');
+      const sortBy = isDesc ? sort.slice(1) : sort;
+      const sortOrder = isDesc ? 'desc' : 'asc';
+
+      const params = new URLSearchParams({ page, limit, sortBy, sortOrder });
       if (actCode) params.set('actCode', actCode);
       if (q) params.set('q', q);
       const res = await api.get(`/sections?${params.toString()}`);
+
+      // Backend puts pagination in res.data.meta, sections in res.data.data
+      const meta = res.data?.meta || {};
       return {
         sections: res.data?.data || [],
-        totalPages: res.data?.totalPages || 1,
-        currentPage: res.data?.currentPage || page,
-        total: res.data?.total || 0,
+        totalPages: meta.totalPages || 1,
+        currentPage: meta.page || page,
+        total: meta.total || 0,
       };
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch sections');

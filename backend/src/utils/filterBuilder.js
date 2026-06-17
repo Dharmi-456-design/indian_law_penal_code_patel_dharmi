@@ -21,6 +21,16 @@ const buildSectionFilter = (query) => {
         filter.sectionNumber = query.sectionNumber.trim();
     }
 
+    // Full-text search across title and description
+    if (query.q) {
+        const regex = new RegExp(query.q.trim(), 'i');
+        filter.$or = [
+            { sectionTitle: regex },
+            { sectionDesc: regex },
+            { sectionNumber: regex }
+        ];
+    }
+
     // Filter by archive status (default to false if not specified)
     if (query.isArchived !== undefined) {
         filter.isArchived = query.isArchived === 'true';
