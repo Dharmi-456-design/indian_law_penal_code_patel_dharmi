@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser, clearError } from '../../store/slices/authSlice';
+import { toggleTheme } from '../../store/slices/uiSlice';
 
 /* ─── Animated Scales of Justice SVG ─────────────────────────────── */
 const ScalesOfJustice = ({ dark }) => (
@@ -120,12 +121,9 @@ const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const theme = useSelector((state) => state.ui.theme);
+  const dark = theme === 'dark';
 
-  const [dark, setDark] = useState(() => {
-    const saved = localStorage.getItem('lex-theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -133,12 +131,6 @@ const Register = () => {
   useEffect(() => {
     setTimeout(() => setMounted(true), 50);
   }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) { root.classList.add('dark'); localStorage.setItem('lex-theme', 'dark'); }
-    else { root.classList.remove('dark'); localStorage.setItem('lex-theme', 'light'); }
-  }, [dark]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -299,14 +291,14 @@ const Register = () => {
                   <div className="text-[11px] text-[#c9a84c] font-semibold tracking-widest uppercase leading-none mt-0.5">Legal Explorer</div>
                 </div>
               </Link>
-              <button onClick={() => setDark(!dark)} id="theme-toggle-register"
-                className={`w-9 h-9 flex items-center justify-center rounded-full border transition-all duration-200 backdrop-blur-sm ${
+              <button onClick={() => dispatch(toggleTheme())} id="theme-toggle-register"
+                className={`w-9 h-9 flex items-center justify-center rounded-full border transition-all duration-200 backdrop-blur-sm hover:scale-110 active:scale-95 transform ${
                   dark 
                     ? 'border-white/10 bg-white/5 hover:bg-white/15 text-white' 
                     : 'border-stone-800/15 bg-stone-800/5 hover:bg-stone-800/10 text-stone-800'
                 }`}
                 aria-label="Toggle theme">
-                <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>
+                <span className="material-symbols-outlined transition-transform duration-500 ease-in-out transform rotate-0 dark:rotate-[360deg]" style={{ fontSize: '17px' }}>
                   {dark ? 'light_mode' : 'dark_mode'}
                 </span>
               </button>
@@ -430,8 +422,8 @@ const Register = () => {
 
           {/* Mobile theme toggle */}
           <div className="md:hidden absolute top-6 right-6">
-            <button onClick={() => setDark(!dark)} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/8 transition-colors">
-              <span className="material-symbols-outlined text-gray-500 dark:text-gray-400" style={{ fontSize: '20px' }}>
+            <button onClick={() => dispatch(toggleTheme())} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/8 hover:scale-110 active:scale-95 transition-all duration-300 transform">
+              <span className="material-symbols-outlined text-gray-500 dark:text-gray-400 transition-transform duration-500 ease-in-out transform rotate-0 dark:rotate-[360deg]" style={{ fontSize: '20px' }}>
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>

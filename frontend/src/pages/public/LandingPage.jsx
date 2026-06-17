@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleTheme } from '../../store/slices/uiSlice';
 
 /* ─── Animated Counter Component ─────────────────────────────────── */
 const AnimatedCounter = ({ end, suffix = '', prefix = '', duration = 2000 }) => {
@@ -159,11 +161,9 @@ const STATS = [
    ════════════════════════════════════════════════════════════════════ */
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [dark, setDark] = useState(() => {
-    const saved = localStorage.getItem('lex-theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+  const dispatch = useDispatch();
+  const theme = useSelector((state) => state.ui.theme);
+  const dark = theme === 'dark';
   const [mounted, setMounted] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -178,12 +178,6 @@ const LandingPage = () => {
   useEffect(() => {
     setTimeout(() => setMounted(true), 80);
   }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) { root.classList.add('dark'); localStorage.setItem('lex-theme', 'dark'); }
-    else { root.classList.remove('dark'); localStorage.setItem('lex-theme', 'light'); }
-  }, [dark]);
 
   /* Header scroll effect */
   useEffect(() => {
@@ -359,11 +353,11 @@ const LandingPage = () => {
           <div className="flex items-center gap-3">
             <button
               id="theme-toggle"
-              onClick={() => setDark(!dark)}
+              onClick={() => dispatch(toggleTheme())}
               aria-label="Toggle theme"
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 hover:scale-110 active:scale-95 transition-all duration-300 transform"
             >
-              <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>
+              <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af] transition-transform duration-500 ease-in-out transform rotate-0 dark:rotate-[360deg]" style={{ fontSize: '20px' }}>
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
@@ -454,6 +448,7 @@ const LandingPage = () => {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
+                  color: 'transparent',
                 }}
               >
                 Precision
@@ -771,6 +766,7 @@ const LandingPage = () => {
                 Numbers That <span style={{
                   background: 'linear-gradient(135deg, #c9a84c, #f0d074)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                  color: 'transparent',
                 }}>Speak</span>
               </h2>
               <p className="text-[15px] text-gray-400 max-w-lg mx-auto leading-relaxed">
@@ -797,6 +793,7 @@ const LandingPage = () => {
                     style={{
                       background: 'linear-gradient(135deg, #c9a84c, #f0d074)',
                       WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                      color: 'transparent',
                     }}>
                     {statsVisible ? (
                       <AnimatedCounter end={stat.value} suffix={stat.suffix} duration={2200} />
@@ -952,6 +949,7 @@ const LandingPage = () => {
                 Your <span style={{
                   background: 'linear-gradient(135deg, #c9a84c, #f0d074)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                  color: 'transparent',
                 }}>Practice</span>?
               </h2>
               <p className="text-[16px] text-[#cdbdff] max-w-xl mx-auto mb-10 leading-relaxed font-medium opacity-90">
