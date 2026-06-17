@@ -62,10 +62,10 @@ const authSlice = createSlice({
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.user = action.payload.data?.user;
+      state.token = action.payload.data?.accessToken;
       state.isAuthenticated = true;
-      localStorage.setItem('lex_token', action.payload.token);
+      localStorage.setItem('lex_token', action.payload.data?.accessToken);
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
@@ -79,10 +79,10 @@ const authSlice = createSlice({
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.user = action.payload.data?.user;
+      state.token = action.payload.data?.accessToken;
       state.isAuthenticated = true;
-      localStorage.setItem('lex_token', action.payload.token);
+      localStorage.setItem('lex_token', action.payload.data?.accessToken);
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false;

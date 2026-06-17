@@ -124,33 +124,33 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
       <div className="p-5 flex flex-col gap-3 flex-1">
         {/* Verified badge */}
         {bookmark.verified && (
-          <span className="self-start text-[10px] font-bold px-2.5 py-1 border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded uppercase tracking-widest bg-gray-50 dark:bg-transparent">
+          <span className="self-start text-[11px] font-bold px-2.5 py-1 border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded uppercase tracking-widest bg-gray-50 dark:bg-transparent">
             VERIFIED
           </span>
         )}
 
         {/* Title */}
         <div>
-          <h3 className="text-[15px] font-semibold text-[#8f6d19] dark:text-[#c9a84c] leading-snug group-hover:text-amber-600 dark:group-hover:text-[#e6c364] transition-colors">
+          <h3 className="text-[17px] font-bold text-[#8f6d19] dark:text-[#c9a84c] leading-snug group-hover:text-amber-600 dark:group-hover:text-[#e6c364] transition-colors">
             {bookmark.sectionTitle || `Section ${bookmark.sectionNumber}`}
           </h3>
-          <p className="text-[11px] font-mono text-gray-400 dark:text-[#6e7681] mt-0.5 tracking-wide">{actFullName}</p>
+          <p className="text-xs font-mono text-gray-400 dark:text-[#6e7681] mt-0.5 tracking-wide">{actFullName}</p>
         </div>
 
         {/* Text excerpt box */}
         {bookmark.description && (
-          <div className="bg-gray-50 dark:bg-[#161b22] border border-gray-150 dark:border-[#21262d] rounded-lg p-3">
-            <p className="text-[12px] text-gray-600 dark:text-[#8b949e] leading-relaxed line-clamp-4">
+          <div className="bg-gray-50 dark:bg-[#161b22] border border-gray-150 dark:border-[#21262d] rounded-lg p-3.5">
+            <p className="text-[13.5px] text-gray-600 dark:text-[#8b949e] leading-relaxed line-clamp-4">
               {bookmark.description}
             </p>
 
             {/* Note section */}
             {bookmark.note && (
               <>
-                <div className="my-2 border-t border-dashed border-gray-200 dark:border-[#30363d]" />
+                <div className="my-2.5 border-t border-dashed border-gray-200 dark:border-[#30363d]" />
                 <div className="flex items-start gap-1.5">
-                  <span className="material-symbols-outlined text-[#8f6d19] dark:text-[#c9a84c] text-[13px] mt-0.5 shrink-0">edit_note</span>
-                  <p className="text-[11px] font-mono text-gray-700 dark:text-[#c9a84c]/80 leading-relaxed">{bookmark.note}</p>
+                  <span className="material-symbols-outlined text-[#8f6d19] dark:text-[#c9a84c] text-[14px] mt-0.5 shrink-0">edit_note</span>
+                  <p className="text-[12px] font-mono text-gray-700 dark:text-[#c9a84c]/80 leading-relaxed">{bookmark.note}</p>
                 </div>
               </>
             )}
@@ -163,7 +163,7 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
             {bookmark.tags.map(tag => (
               <span
                 key={tag}
-                className="text-[10px] font-semibold px-2 py-0.5 bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded tracking-wide"
+                className="text-[11px] font-medium px-2 py-0.5 bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#8b949e] rounded tracking-wide"
               >
                 {tag}
               </span>
@@ -176,16 +176,16 @@ function BookmarkCard({ bookmark, onRemove, navigate }) {
       <div className="border-t border-gray-200 dark:border-[#21262d] px-5 py-3 flex items-center justify-between bg-gray-50/50 dark:bg-[#0d1117]">
         <button
           onClick={handleOpen}
-          className="text-[11px] font-semibold text-blue-600 dark:text-[#58a6ff] hover:text-blue-500 dark:hover:text-[#79c0ff] flex items-center gap-1 transition-colors"
+          className="text-xs font-semibold text-blue-600 dark:text-[#58a6ff] hover:text-blue-500 dark:hover:text-[#79c0ff] flex items-center gap-1 transition-colors"
         >
-          <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+          <span className="material-symbols-outlined text-[14px]">open_in_new</span>
           View Section
         </button>
         <button
           onClick={handleRemove}
-          className="text-[11px] text-gray-400 dark:text-[#6e7681] hover:text-red-500 dark:hover:text-red-400 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100"
+          className="text-xs text-gray-400 dark:text-[#6e7681] hover:text-red-500 dark:hover:text-red-400 flex items-center gap-1 transition-colors opacity-0 group-hover:opacity-100"
         >
-          <span className="material-symbols-outlined text-[13px]">bookmark_remove</span>
+          <span className="material-symbols-outlined text-[14px]">bookmark_remove</span>
           Remove
         </button>
       </div>

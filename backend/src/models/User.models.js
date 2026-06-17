@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
     refreshToken: {
         type: String,
         select: false
+    },
+    barCouncil: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true

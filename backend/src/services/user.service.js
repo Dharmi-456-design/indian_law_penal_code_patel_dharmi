@@ -104,7 +104,7 @@ const getUserStats = async () => {
 };
 
 const updateProfile = async (userId, updateData) => {
-    const { name, email, currentPassword, newPassword } = updateData;
+    const { name, email, barCouncil, currentPassword, newPassword } = updateData;
     
     const user = await User.findById(userId).select('+password');
     if (!user) {
@@ -124,8 +124,9 @@ const updateProfile = async (userId, updateData) => {
         user.password = newPassword;
     }
 
-    if (name) user.name = name;
-    if (email) user.email = email;
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (barCouncil !== undefined) user.barCouncil = barCouncil;
 
     await user.save();
     

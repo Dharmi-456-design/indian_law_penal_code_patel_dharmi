@@ -56,6 +56,18 @@ const getTopQueries = asyncHandler(async (req, res) => {
     );
 });
 
+const getSearchLogs = asyncHandler(async (req, res) => {
+    const { page, limit, search } = req.query;
+    const { data, meta } = await analyticsService.getSearchLogs({
+        page,
+        limit,
+        search
+    });
+    return res.status(200).json(
+        new ApiResponse(200, data, 'Search logs retrieved successfully', meta)
+    );
+});
+
 module.exports = {
     getOverview,
     getActDistribution,
@@ -63,5 +75,6 @@ module.exports = {
     getUserGrowth,
     getTopViewed,
     getSearchTrends,
-    getTopQueries
+    getTopQueries,
+    getSearchLogs
 };

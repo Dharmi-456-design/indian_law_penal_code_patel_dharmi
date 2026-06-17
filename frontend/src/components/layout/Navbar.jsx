@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toggleSidebar, toggleTheme } from '../../store/slices/uiSlice';
+import { toggleSidebar } from '../../store/slices/uiSlice';
 import { setQuery, removeFromHistory } from '../../store/slices/searchSlice';
 
 const Navbar = () => {
@@ -158,21 +158,21 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right: Theme + Notifications */}
+      {/* Right: Dark mode badge + Notifications */}
       <div className="flex items-center gap-3">
-        <button
-          onClick={() => dispatch(toggleTheme())}
-          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-[#1d2021] active:scale-90 transition-all text-gray-500 hover:text-gray-700 dark:text-[#c9a84c] dark:hover:text-[#e6c364]"
-          aria-label="Toggle theme"
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        {/* Dark mode permanent indicator — no toggle */}
+        <div
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#111417] border border-[#c9a84c]/20"
+          title="Dark mode is always on"
         >
           <span
-            className="material-symbols-outlined transition-transform duration-300 hover:rotate-45"
-            style={{ fontSize: '19px', fontVariationSettings: isDark ? "'FILL' 1" : "'FILL' 0" }}
+            className="material-symbols-outlined text-[#c9a84c]"
+            style={{ fontSize: '14px', fontVariationSettings: "'FILL' 1" }}
           >
-            {isDark ? 'dark_mode' : 'light_mode'}
+            dark_mode
           </span>
-        </button>
+          <span className="text-[10px] font-semibold text-[#c9a84c] tracking-wide uppercase">Dark</span>
+        </div>
 
         <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#f3f4f6] dark:hover:bg-[#1d2021] transition-colors relative">
           <span className="material-symbols-outlined text-[#6b7280] dark:text-[#9ca3af]" style={{ fontSize: '20px' }}>notifications</span>

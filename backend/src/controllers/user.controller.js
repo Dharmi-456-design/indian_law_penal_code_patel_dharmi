@@ -73,11 +73,12 @@ const getUserStats = asyncHandler(async (req, res) => {
 
 const updateProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const { name, email, currentPassword, newPassword } = req.body;
+    const { name, email, barCouncil, currentPassword, newPassword } = req.body;
     
     const updatedUser = await userService.updateProfile(userId, {
         name,
         email,
+        barCouncil,
         currentPassword,
         newPassword
     });
