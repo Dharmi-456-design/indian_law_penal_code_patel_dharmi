@@ -23,7 +23,7 @@ const SORT_OPTIONS = [
   { value: '-sectionTitle',  label: 'Title Z–A' },
 ];
 
-/* ─── Custom dark dropdown ──────────────────────────────────────────── */
+/* ─── Custom responsive dropdown ────────────────────────────────────── */
 function CustomSelect({ value, onChange, options, placeholder = 'Select...' }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -42,13 +42,13 @@ function CustomSelect({ value, onChange, options, placeholder = 'Select...' }) {
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-[#30363d] bg-[#161b22] text-sm text-white hover:border-[#c9a84c]/50 focus:outline-none focus:border-[#c9a84c]/60 transition-all cursor-pointer"
+        className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-sm text-gray-900 dark:text-white hover:border-[#c9a84c]/50 focus:outline-none focus:border-[#c9a84c]/60 transition-all cursor-pointer shadow-sm"
       >
-        <span className={selected ? 'text-white' : 'text-[#6e7681]'}>
+        <span className={selected ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-[#6e7681]'}>
           {selected ? selected.label : placeholder}
         </span>
         <span
-          className="material-symbols-outlined text-[#6e7681] transition-transform duration-200"
+          className="material-symbols-outlined text-gray-400 dark:text-[#6e7681] transition-transform duration-200"
           style={{ fontSize: '18px', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
         >
           expand_more
@@ -56,7 +56,7 @@ function CustomSelect({ value, onChange, options, placeholder = 'Select...' }) {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1.5 left-0 right-0 z-50 bg-[#161b22] border border-[#30363d] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden">
+        <div className="absolute top-full mt-1.5 left-0 right-0 z-50 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-xl shadow-lg dark:shadow-[0_8px_32px_rgba(0,0,0,0.6)] overflow-hidden">
           {options.map(opt => (
             <button
               key={opt.value}
@@ -65,7 +65,7 @@ function CustomSelect({ value, onChange, options, placeholder = 'Select...' }) {
               className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                 opt.value === value
                   ? 'bg-[#c9a84c]/15 text-[#c9a84c] font-semibold'
-                  : 'text-[#c9d1d9] hover:bg-[#21262d] hover:text-white'
+                  : 'text-gray-700 dark:text-[#c9d1d9] hover:bg-gray-100 dark:hover:bg-[#21262d] hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {opt.label}
@@ -84,7 +84,7 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
 
   return (
     <div
-      className="group relative bg-[#0d1117] border border-[#21262d] rounded-2xl p-6 flex flex-col gap-3 hover:border-[#c9a84c]/40 hover:shadow-[0_0_20px_rgba(201,168,76,0.08)] transition-all duration-300 cursor-pointer"
+      className="group relative bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#21262d] rounded-2xl p-6 flex flex-col gap-3 hover:border-[#c9a84c]/40 hover:shadow-lg dark:hover:shadow-[0_0_20px_rgba(201,168,76,0.08)] transition-all duration-350 cursor-pointer"
       onClick={() => navigate(`/dashboard/section/${section._id}`)}
     >
       {/* Top accent */}
@@ -92,10 +92,10 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
 
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#21262d] text-[#c9d1d9] tracking-widest uppercase">
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-[#21262d] text-gray-700 dark:text-[#c9d1d9] tracking-widest uppercase">
             {section.actCode}
           </span>
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#c9a84c]/10 text-[#e6c364] border border-[#c9a84c]/20">
+          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#c9a84c]/10 text-[#8f6d19] dark:text-[#e6c364] border border-[#c9a84c]/20">
             Sec. {section.sectionNumber}
           </span>
         </div>
@@ -103,8 +103,8 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
           onClick={(e) => { e.stopPropagation(); onBookmark(section); }}
           className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
             isBookmarked
-              ? 'bg-[#c9a84c]/20 text-[#c9a84c]'
-              : 'bg-[#21262d] text-[#6e7681] hover:text-[#c9a84c] hover:bg-[#c9a84c]/10'
+              ? 'bg-amber-100 dark:bg-[#c9a84c]/20 text-amber-600 dark:text-[#c9a84c]'
+              : 'bg-gray-100 dark:bg-[#21262d] text-gray-400 dark:text-[#6e7681] hover:text-[#c9a84c] hover:bg-amber-50 dark:hover:bg-[#c9a84c]/10'
           }`}
           title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
         >
@@ -117,16 +117,16 @@ function SectionCard({ section, onBookmark, bookmarkedIds }) {
         </button>
       </div>
 
-      <h3 className="text-[15px] font-bold text-white leading-snug group-hover:text-[#c9a84c] transition-colors duration-200 line-clamp-2">
+      <h3 className="text-[15px] font-bold text-gray-900 dark:text-white leading-snug group-hover:text-[#c9a84c] transition-colors duration-200 line-clamp-2">
         {section.sectionTitle || section.title || 'Untitled Section'}
       </h3>
 
-      <p className="text-[13px] text-[#8b949e] leading-relaxed line-clamp-3">
+      <p className="text-[13px] text-gray-500 dark:text-[#8b949e] leading-relaxed line-clamp-3">
         {section.sectionDesc || section.content || section.description || 'No content preview available.'}
       </p>
 
-      <div className="flex items-center justify-between pt-3 mt-auto border-t border-[#21262d]">
-        <span className="text-[11px] text-[#6e7681] font-medium">{section.actYear || ''}</span>
+      <div className="flex items-center justify-between pt-3 mt-auto border-t border-gray-100 dark:border-[#21262d]">
+        <span className="text-[11px] text-gray-400 dark:text-[#6e7681] font-medium">{section.actYear || ''}</span>
         <span className="text-[11px] font-semibold text-[#c9a84c] flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           View Full <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>arrow_forward</span>
         </span>
@@ -150,15 +150,15 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#30363d] text-[#6e7681] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="w-9 h-9 rounded-xl flex items-center justify-center border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#6e7681] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>chevron_left</span>
       </button>
 
       {currentPage > delta + 1 && (
         <>
-          <button onClick={() => onPageChange(1)} className="w-9 h-9 rounded-xl text-sm font-semibold border border-[#30363d] text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] transition-all">1</button>
-          {currentPage > delta + 2 && <span className="text-[#6e7681] px-1">…</span>}
+          <button onClick={() => onPageChange(1)} className="w-9 h-9 rounded-xl text-sm font-semibold border border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] transition-all">1</button>
+          {currentPage > delta + 2 && <span className="text-gray-400 dark:text-[#6e7681] px-1">…</span>}
         </>
       )}
 
@@ -168,8 +168,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           onClick={() => onPageChange(p)}
           className={`w-9 h-9 rounded-xl text-sm font-bold border transition-all ${
             p === currentPage
-              ? 'bg-[#c9a84c] border-[#c9a84c] text-black shadow-md shadow-[#c9a84c]/30'
-              : 'border-[#30363d] text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c]'
+              ? 'bg-[#c9a84c] border-[#c9a84c] text-white dark:text-black shadow-md shadow-[#c9a84c]/30'
+              : 'border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c]'
           }`}
         >
           {p}
@@ -178,15 +178,15 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
       {currentPage < totalPages - delta && (
         <>
-          {currentPage < totalPages - delta - 1 && <span className="text-[#6e7681] px-1">…</span>}
-          <button onClick={() => onPageChange(totalPages)} className="w-9 h-9 rounded-xl text-sm font-semibold border border-[#30363d] text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] transition-all">{totalPages}</button>
+          {currentPage < totalPages - delta - 1 && <span className="text-gray-400 dark:text-[#6e7681] px-1">…</span>}
+          <button onClick={() => onPageChange(totalPages)} className="w-9 h-9 rounded-xl text-sm font-semibold border border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#8b949e] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] transition-all">{totalPages}</button>
         </>
       )}
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#30363d] text-[#6e7681] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+        className="w-9 h-9 rounded-xl flex items-center justify-center border border-gray-200 dark:border-[#30363d] text-gray-500 dark:text-[#6e7681] hover:bg-[#c9a84c]/10 hover:border-[#c9a84c]/30 hover:text-[#c9a84c] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
       >
         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>chevron_right</span>
       </button>
@@ -273,7 +273,7 @@ export default function BrowsePage() {
   ];
 
   return (
-    <div className="min-h-screen pb-20 font-sans bg-[#010409] text-white">
+    <div className="min-h-screen pb-20 font-sans text-gray-900 dark:text-white bg-transparent">
 
       {/* ── Background glow ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -285,14 +285,14 @@ export default function BrowsePage() {
 
         {/* ── PAGE HEADER ── */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-[#6e7681] font-medium mb-3">
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-[#6e7681] font-medium mb-3">
             <Link to="/dashboard" className="hover:text-[#c9a84c] transition-colors">Dashboard</Link>
             <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chevron_right</span>
-            <span className="text-[#c9d1d9] font-semibold">Browse Sections</span>
+            <span className="text-gray-700 dark:text-[#c9d1d9] font-semibold">Browse Sections</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
                 <span
                   className="material-symbols-outlined text-[#c9a84c] text-4xl"
                   style={{ fontVariationSettings: "'FILL' 1" }}
@@ -301,7 +301,7 @@ export default function BrowsePage() {
                 </span>
                 Browse Legal Sections
               </h1>
-              <p className="text-sm text-[#6e7681] mt-1 font-medium">
+              <p className="text-sm text-gray-500 dark:text-[#6e7681] mt-1 font-medium">
                 {total > 0
                   ? `${total.toLocaleString('en-IN')} sections`
                   : 'Loading...'}
@@ -312,11 +312,11 @@ export default function BrowsePage() {
             {/* Quick stats */}
             {total > 0 && (
               <div className="flex items-center gap-3 text-sm">
-                <div className="px-4 py-2 bg-[#161b22] border border-[#30363d] rounded-xl flex items-center gap-2">
+                <div className="px-4 py-2 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-xl flex items-center gap-2 shadow-sm">
                   <span className="w-2 h-2 rounded-full bg-[#c9a84c] animate-pulse" />
-                  <span className="text-[#8b949e]">Page</span>
-                  <span className="text-white font-bold">{currentPage}</span>
-                  <span className="text-[#6e7681]">/ {totalPages}</span>
+                  <span className="text-gray-500 dark:text-[#8b949e]">Page</span>
+                  <span className="text-gray-900 dark:text-white font-bold">{currentPage}</span>
+                  <span className="text-gray-400 dark:text-[#6e7681]">/ {totalPages}</span>
                 </div>
               </div>
             )}
@@ -324,13 +324,13 @@ export default function BrowsePage() {
         </div>
 
         {/* ── FILTERS BAR ── */}
-        <div className="bg-[#0d1117] border border-[#21262d] rounded-2xl p-5 mb-8">
+        <div className="bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#21262d] rounded-2xl p-5 mb-8 shadow-sm">
           <div className="flex flex-col md:flex-row gap-4">
 
             {/* Search */}
             <div className="flex-1 relative">
               <span
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#6e7681]"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 dark:text-[#6e7681]"
                 style={{ fontSize: '20px' }}
               >
                 search
@@ -340,7 +340,7 @@ export default function BrowsePage() {
                 value={q}
                 onChange={e => { setQ(e.target.value); setPage(1); }}
                 placeholder="Search sections by title or content..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#30363d] bg-[#161b22] text-sm text-white placeholder-[#6e7681] focus:outline-none focus:border-[#c9a84c]/50 focus:ring-1 focus:ring-[#c9a84c]/20 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-[#6e7681] focus:outline-none focus:border-[#c9a84c]/50 focus:ring-1 focus:ring-[#c9a84c]/20 transition-all shadow-sm"
               />
             </div>
 
@@ -364,7 +364,7 @@ export default function BrowsePage() {
             {(actCode || q) && (
               <button
                 onClick={() => { setActCode(''); setQ(''); setPage(1); setSearchParams({}); }}
-                className="px-4 py-2.5 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
+                className="px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>filter_alt_off</span>
                 Clear
@@ -373,13 +373,13 @@ export default function BrowsePage() {
           </div>
 
           {/* Act quick-filter chips */}
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#21262d]">
+          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-[#21262d]">
             <button
               onClick={() => handleActChange('')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                 actCode === ''
-                  ? 'bg-[#c9a84c] text-black shadow-sm shadow-[#c9a84c]/30'
-                  : 'bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:border-[#c9a84c]/40 hover:text-[#c9a84c]'
+                  ? 'bg-[#c9a84c] text-white dark:text-black shadow-sm shadow-[#c9a84c]/30'
+                  : 'bg-gray-100 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#8b949e] hover:border-[#c9a84c]/40 hover:text-[#c9a84c]'
               }`}
             >
               All Acts
@@ -390,8 +390,8 @@ export default function BrowsePage() {
                 onClick={() => handleActChange(a.actCode)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
                   actCode === a.actCode
-                    ? 'bg-[#c9a84c] text-black shadow-sm shadow-[#c9a84c]/30'
-                    : 'bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:border-[#c9a84c]/40 hover:text-[#c9a84c]'
+                    ? 'bg-[#c9a84c] text-white dark:text-black shadow-sm shadow-[#c9a84c]/30'
+                    : 'bg-gray-100 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#8b949e] hover:border-[#c9a84c]/40 hover:text-[#c9a84c]'
                 }`}
               >
                 {a.actCode}
@@ -404,27 +404,27 @@ export default function BrowsePage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-[#0d1117] border border-[#21262d] rounded-2xl p-6 animate-pulse space-y-3">
+              <div key={i} className="bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#21262d] rounded-2xl p-6 animate-pulse space-y-3">
                 <div className="flex gap-2">
-                  <div className="h-5 bg-[#21262d] rounded-lg w-12" />
-                  <div className="h-5 bg-[#21262d] rounded-lg w-16" />
+                  <div className="h-5 bg-gray-200 dark:bg-[#21262d] rounded-lg w-12" />
+                  <div className="h-5 bg-gray-200 dark:bg-[#21262d] rounded-lg w-16" />
                 </div>
-                <div className="h-5 bg-[#21262d] rounded w-3/4" />
+                <div className="h-5 bg-gray-200 dark:bg-[#21262d] rounded w-3/4" />
                 <div className="space-y-2">
-                  <div className="h-3 bg-[#161b22] rounded w-full" />
-                  <div className="h-3 bg-[#161b22] rounded w-5/6" />
-                  <div className="h-3 bg-[#161b22] rounded w-4/6" />
+                  <div className="h-3 bg-gray-100 dark:bg-[#161b22] rounded w-full" />
+                  <div className="h-3 bg-gray-100 dark:bg-[#161b22] rounded w-5/6" />
+                  <div className="h-3 bg-gray-100 dark:bg-[#161b22] rounded w-4/6" />
                 </div>
               </div>
             ))}
           </div>
         ) : sections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4 text-center">
-            <div className="w-20 h-20 rounded-full bg-[#161b22] border border-[#21262d] flex items-center justify-center mb-2">
-              <span className="material-symbols-outlined text-[#6e7681] text-4xl">find_in_page</span>
+            <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-[#161b22] border border-gray-200 dark:border-[#21262d] flex items-center justify-center mb-2">
+              <span className="material-symbols-outlined text-gray-400 dark:text-[#6e7681] text-4xl">find_in_page</span>
             </div>
-            <p className="text-lg font-semibold text-white">No sections found</p>
-            <p className="text-sm text-[#6e7681]">Try adjusting your filters or search query.</p>
+            <p className="text-lg font-semibold text-gray-800 dark:text-white">No sections found</p>
+            <p className="text-sm text-gray-500 dark:text-[#6e7681]">Try adjusting your filters or search query.</p>
             <button
               onClick={() => { setActCode(''); setQ(''); setSearchParams({}); }}
               className="mt-2 px-5 py-2.5 rounded-xl bg-[#c9a84c]/10 text-[#c9a84c] font-semibold text-sm hover:bg-[#c9a84c]/20 transition-colors border border-[#c9a84c]/20"
@@ -446,7 +446,7 @@ export default function BrowsePage() {
             </div>
 
             <div className="mt-8 flex flex-col items-center gap-2">
-              <p className="text-xs text-[#6e7681] font-medium">
+              <p className="text-xs text-gray-500 dark:text-[#6e7681] font-medium">
                 Page {currentPage} of {totalPages} · {total.toLocaleString('en-IN')} total sections
               </p>
               <Pagination
