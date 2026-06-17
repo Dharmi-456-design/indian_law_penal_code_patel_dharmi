@@ -13,7 +13,7 @@ const Sidebar = () => {
   const isAdmin = user?.role === 'admin';
 
   const userRoutes = [
-    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
+    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard', end: true },
     { name: 'Browse Legal Data', path: '/dashboard/browse', icon: 'search' },
     { name: 'Bookmarks', path: '/dashboard/bookmarks', icon: 'bookmark' },
     { name: 'My Notes', path: '/dashboard/notes', icon: 'edit_document' },
@@ -21,7 +21,7 @@ const Sidebar = () => {
   ];
 
   const adminRoutes = [
-    { name: 'Admin Dashboard', path: '/admin', icon: 'admin_panel_settings' },
+    { name: 'Admin Dashboard', path: '/admin', icon: 'admin_panel_settings', end: true },
     { name: 'Manage Users', path: '/admin/users', icon: 'manage_accounts' },
     { name: 'Manage Acts', path: '/admin/acts', icon: 'gavel' },
     { name: 'Manage Sections', path: '/admin/sections', icon: 'receipt_long' },
@@ -73,6 +73,7 @@ const Sidebar = () => {
             <NavLink
               key={route.path}
               to={route.path}
+              end={route.end ?? false}
               onClick={() => { if(window.innerWidth < 1024) closeSidebar() }}
               className={({ isActive }) => 
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
